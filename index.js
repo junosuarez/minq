@@ -36,7 +36,13 @@ Query.prototype = {
   update: update,
   upsert: upsert,
   remove: remove,
-  removeAll: removeAll
+  removeAll: removeAll,
+  // linq aliases
+  from: collection,
+  take: limit,
+  orderBy: sort,
+  first: one, // note, does not throw (unlike linq), equivalent to firstOrDefault
+  firstOrDefault: one
 }
 
 // query
