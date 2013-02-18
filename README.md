@@ -24,6 +24,16 @@ inspired by linq. WIP.
       .collection('foo')
       .skip(20)
       .limit(50)
+      .sort('name')
+      .toArray()
+
+or, somewhat linq-ier:
+
+    minq
+      .from('foo')
+      .skip(20)
+      .take(50)
+      .orderBy('name')
       .toArray()
 
     minq
@@ -59,7 +69,8 @@ Mutator Finalizers are: `.insert` `.update` `.upsert` `.remove` `.removeAll`
 where db is a mongodb db connection object
 
 ### Query.collection(collectionName) => Query
-returns a new Query object configured with the collection name
+returns a new Query object configured with the collection name.
+alias: `from`
 
 ### Query.where(query) => Query
 (optional) `query` is a mongodb [query object](http://mongodb.github.com/node-mongodb-native/markdown-docs/queries.html#query-object), with standard `$` operators
@@ -68,10 +79,13 @@ returns a new Query object configured with the collection name
 (optional) `fields` is a mongodb projection object, with keys corresponding to the fields of the document you want to return
 
 ### Query.sort(by) => Query
-(optional) `by` is a mongodb [sort order](http://mongodb.github.com/node-mongodb-native/markdown-docs/queries.html#query-options) option
+(optional) `by` is a mongodb [sort order](http://mongodb.github.com/node-mongodb-native/markdown-docs/queries.html#query-options) option.
+alias: `orderBy`
 
 ### Query.limit(number) => Query
-(optional) `number` is a Number for the maximum number of documents you want to return
+(optional) `number` is a Number for the maximum number of documents you want to return.
+alias: `take`
+
 
 ### Query.skip(number) => Query
 (optional) `number` is a Number for the number of documents which otherwise match the query that you want to skip in the result
@@ -81,6 +95,7 @@ Read Finalizer. The promise is resolved with the array of documents matching you
 
 ### Query.one() => Promise<Object>
 Read Finalizer. The promise is resolved with the document matching your query or `null`.
+alias: `first`, `firstOrDefault`. Note, `first` does not throw on null, unlike in linq. Think of it as `firstOrDefault`.
 
 ### Query.stream() => Stream<Object>
 Read Finalizer. The stream is a mongo [read stream](http://mongodb.github.com/node-mongodb-native/api-generated/cursorstream.html) of documents matching your query.
