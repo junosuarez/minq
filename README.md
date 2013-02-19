@@ -15,7 +15,7 @@ inspired by linq. WIP.
 
     minq
       .collection('foo')
-      .where({name: /foo/})
+      .where({name: minq.like('John')})
       .select({name: 1, email: 1})
       .limit(1000)
       .toArray()
@@ -67,6 +67,9 @@ Mutator Finalizers are: `.insert` `.update` `.upsert` `.remove` `.removeAll`
 
 ### minq(db) => Query
 where db is a mongodb db connection object
+
+### minq.like(string) => RegExp
+builds a RegExp for use with a where clause, `minq.like` helps by escaping characters for you. It creates a case-insensitive regex.
 
 ### Query.collection(collectionName) => Query
 returns a new Query object configured with the collection name.

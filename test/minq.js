@@ -23,6 +23,35 @@ describe('minq', function () {
     q.should.be.instanceof(minq)
   })
 
+  describe('static functions', function () {
+    it('interface', function () {
+      minq.should.have.interface({
+        connect: Function,
+        ObjectId: Function,
+        ObjectID: Function,
+        like: Function
+      })
+    })
+    describe('like', function () {
+      it('builds a regexp for use in a where query', function () {
+        Object.prototype.toString.call(minq.like('foo')).should.equal('[object RegExp]')
+      })
+      it('escapes regex chars', function () {
+        var pattern = '#F#$FESR^.^_\\^GGW$%E()...'
+        var regex = minq.like(pattern)
+        regex.test(pattern).should.equal(true)
+        var regex2 = new RegExp(pattern)
+        regex2.test(pattern).should.equal(false)
+      })
+      it('creates a cast insensitive regex', function () {
+        var regex = minq.like('FOO')
+        regex.test('foo').should.equal(true)
+        regex.test('FOO').should.equal(true)
+        regex.test('bar').should.equal(false)
+      })
+    })
+  })
+
   describe('Query', function () {
     it('has interface', function () {
       minq().should.have.interface({

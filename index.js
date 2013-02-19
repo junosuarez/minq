@@ -2,6 +2,7 @@ var Q = require('q')
 var through = require('through')
 var mongodb = require('mongodb')
 var maskurl = require('maskurl')
+var quotemeta = require('quotemeta')
 
 var connection
 
@@ -331,6 +332,11 @@ module.exports.from = module.exports.collection = function (collection) {
 module.exports.connect = connect
 module.exports.ObjectId = mongodb.ObjectID
 module.exports.ObjectID = mongodb.ObjectID
+module.exports.like = like
+
+function like(string) {
+  return new RegExp(quotemeta(string), 'i')
+}
 
 
 
