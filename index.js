@@ -203,9 +203,9 @@ function update(changes) {
   self._.options.upsert = false
   self._.options['new'] = true
 
-  if ('_id' in setter) {
-    self._.query._id = restoreId = setter._id
-    delete setter._id
+  if ('_id' in changes) {
+    self._.query._id = restoreId = changes._id
+    delete changes._id
   }
 
   getCollection(self, function (err, collection) {
