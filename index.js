@@ -291,33 +291,36 @@ function removeAll() {
 // helpers
 
 function getCollection(self, cb) {
-  try {
-    self._.db.collection(self._.collection, function (err, collection) {
-      if (err) { return cb(err) }
-      log('from ', self._.collection)
-      return cb(null, collection)
-    })
-  } catch (e) {
-    cb(e)
-  }
+  Q.when(self._.db, function (db) {
+    try {
+      db.collection(self._.collection, function (err, collection) {
+        if (err) { return cb(err) }
+        log('from ', self._.collection)
+        return cb(null, collection)
+      })
+    } catch (e) {
+      cb(e)
+    }
+  })
 }
 
 function getCursor(self, cb) {
-  try{
-    self._.db.collection(self._.collection, function (err, collection) {
-      if (err) { return cb(err) }
-
-      var q = [self._.query]
-      if (self._.projection) { q.push(self._.projection) }
-      q.push(self._.options)
-      log('from ', self._.collection)
-      log('where ', q[0])
-      if (self._.projection) { log('select ', q[1]) }
-      cb(null, collection.find.apply(collection, q))
-    })
-  } catch (e) {
-    cb(e)
-  }
+  Q.when(self._.db, function (db) {
+    try{
+      db.collection(self._.collection, function (err, collection) {
+        if (err) { return cb(err) }
+        var q = [self._.query]
+        if (self._.projection) { q.push(self._.projection) }
+        q.push(self._.options)
+        log('from ', self._.collection)
+        log('where ', q[0])
+        if (self._.projection) { log('select ', q[1]) }
+        cb(null, collection.find.apply(collection, q))
+      })
+    } catch (e) {
+      cb(e)
+    }
+  })
 }
 
 module.exports = Query
@@ -357,18 +360,14 @@ function log() {
 // for argument syntax, see http://mongodb.github.com/node-mongodb-native/driver-articles/mongoclient.html
 function connect(connectionString, options) {
   log('connecting to', maskurl(connectionString))
-  return Q.nfcall(
+
+  return connection = Q.nfcall(
     mongodb.MongoClient.connect,
     connectionString,
     options
-  )
-  .then(function (db){
+  ).then(function (db){
     log('connected')
-    connection = db;
-    return function () {
-      db.close()
-      log('connection closed')
-    }
+    return connection = db;
   })
 
 }
