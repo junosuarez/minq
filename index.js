@@ -333,8 +333,19 @@ module.exports.from = module.exports.collection = function (collection) {
 
 // convenience
 module.exports.connect = connect
-module.exports.ObjectId = mongodb.ObjectID
-module.exports.ObjectID = mongodb.ObjectID
+
+function ObjectId(id) {
+  if (this instanceof ObjectId || typeof id === 'string') {
+    return new mongodb.ObjectID(id)
+  }
+  if (typeof id === 'object') {
+    return new mongodb.ObjectID(id.toString())
+  }
+  return new mongodb.ObjectID()
+}
+
+module.exports.ObjectId = ObjectId
+module.exports.ObjectID = ObjectId
 module.exports.like = like
 
 function like(string) {
