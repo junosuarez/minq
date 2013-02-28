@@ -27,6 +27,9 @@ describe('minq', function () {
     it('interface', function () {
       minq.should.have.interface({
         connect: Function,
+        from: Function,
+        collection: Function,
+        drop: Function,
         ObjectId: Function,
         ObjectID: Function,
         like: Function

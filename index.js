@@ -42,6 +42,7 @@ Query.prototype = {
   upsert: upsert,
   remove: remove,
   removeAll: removeAll,
+  drop: drop,
   // linq aliases
   from: collection,
   take: limit,
@@ -288,10 +289,34 @@ function removeAll() {
   return dfd.promise
 }
 
+// Drops an entire collection
+// @return Promise
+function drop(collection) {
+  var dfd = Q.defer()
+  var self = this
+  log('drop')
+
+  if (collection) {
+    self._.collection = collection
+  }
+
+  getCollection(self, function (err, collection) {
+    collection.drop(function (err, result) {
+      if (err) { return dfd.reject(err) }
+      dfd.resolve(result)
+    })
+  })
+
+  return dfd.promise
+}
+
 // helpers
 
 function getCollection(self, cb) {
   Q.when(self._.db, function (db) {
+    if (!self._.collection) {
+      cb(new ArgumentError('Collection must be specified'))
+    }
     try {
       db.collection(self._.collection, function (err, collection) {
         if (err) { return cb(err) }
@@ -329,6 +354,10 @@ module.exports = Query
 // @param collection String
 module.exports.from = module.exports.collection = function (collection) {
   return new Query(connection, collection)
+}
+
+module.exports.drop = function (collection) {
+  return module.exports.collection(collection).drop()
 }
 
 // convenience

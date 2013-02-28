@@ -9,9 +9,9 @@ inspired by linq. WIP.
 
 ## usage
 
-    var db = myInitializedMongoDbConnection
+    var minq = require('minq')
 
-    var minq = require('minq')(db)
+    minq.connect(connectionString)
 
     minq
       .collection('foo')
@@ -55,6 +55,9 @@ or, somewhat linq-ier:
       .collection('foo')
       .insert({name: 'Melissa', email: 'm@m.com'})
 
+    minq
+      .drop('foo')
+
 minq queries are contstructed starting with a db and collection, then by adding various options and constraints, and ending with a finalizer. Finalizers return a [Q promise](https://npmjs.org/package/q).
 
 Read Finalizers are: `.toArray` `.one` `.stream` `.count`
@@ -70,6 +73,9 @@ where db is a mongodb db connection object
 
 ### minq.like(string) => RegExp
 builds a RegExp for use with a where clause, `minq.like` helps by escaping characters for you. It creates a case-insensitive regex.
+
+### minq.connect(connectionString) => Promise
+Set the default connection for minq to use. `connectionString` should be a [MongoDb uri](http://docs.mongodb.org/manual/reference/connection-string/)
 
 ### Query.collection(collectionName) => Query
 returns a new Query object configured with the collection name.
@@ -117,6 +123,9 @@ Mutator Finalizer. Remove documents matching a `where` query. The promise is the
 
 ### Query.removeAll() => Promise<Number>
 Mutator Finalizer. Remove all documents in a collection. The promise is the number of documents removed.
+
+### Query.drop(collection) => Promise
+Finalizer. Drop an entire collection.
 
 ## running the tests
 
