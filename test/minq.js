@@ -30,6 +30,7 @@ describe('minq', function () {
         from: Function,
         collection: Function,
         drop: Function,
+        getCollections: Function,
         ObjectId: Function,
         ObjectID: Function,
         like: Function

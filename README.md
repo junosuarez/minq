@@ -77,6 +77,9 @@ builds a RegExp for use with a where clause, `minq.like` helps by escaping chara
 ### minq.connect(connectionString) => Promise
 Set the default connection for minq to use. `connectionString` should be a [MongoDb uri](http://docs.mongodb.org/manual/reference/connection-string/)
 
+### minq.getCollections() =>Promise<[String]>
+Returns a promise for an array of strings containing the collection names for the default connection.
+
 ### Query.collection(collectionName) => Query
 returns a new Query object configured with the collection name.
 alias: `from`
@@ -94,7 +97,6 @@ alias: `orderBy`
 ### Query.limit(number) => Query
 (optional) `number` is a Number for the maximum number of documents you want to return.
 alias: `take`
-
 
 ### Query.skip(number) => Query
 (optional) `number` is a Number for the number of documents which otherwise match the query that you want to skip in the result

@@ -360,6 +360,16 @@ module.exports.drop = function (collection) {
   return module.exports.collection(collection).drop()
 }
 
+module.exports.getCollections = function () {
+  return Q.when(connection).then(function (db) {
+    var dfd = Q.defer()
+
+    db.collectionNames(dfd.makeNodeResolver())
+
+    return dfd.promise
+  })
+}
+
 // convenience
 module.exports.connect = connect
 
