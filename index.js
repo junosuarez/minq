@@ -364,7 +364,15 @@ module.exports.getCollections = function () {
   return Q.when(connection).then(function (db) {
     var dfd = Q.defer()
 
-    db.collectionNames(dfd.makeNodeResolver())
+    db.collectionNames(function (err, names) {
+      if (err) { return dfd.reject(err) }
+      try {
+        names = names.map(function (x) { return x.name.replace(/^\w*\./, '') })
+        dfd.resolve(names)
+      } catch (e) {
+        return dfd.reject(e)
+      }
+    })
 
     return dfd.promise
   })
