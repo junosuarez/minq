@@ -108,6 +108,12 @@ Read Finalizer. The promise is resolved with the array of documents matching you
 Read Finalizer. The promise is resolved with the document matching your query or `null`.
 alias: `first`, `firstOrDefault`. Note, `first` does not throw on null, unlike in linq. Think of it as `firstOrDefault`.
 
+### Query.deferToArray => () => Promise<Array>
+[Thunked](http://en.wikipedia.org/wiki/Thunk_(functional_programming)) `Query.toArray`.
+
+### Query.deferOne => () => Promise<Object>
+[Thunked](http://en.wikipedia.org/wiki/Thunk_(functional_programming)) `Query.one`. Other Finalizers begin executing a query immediately. This method returns a function which can be called to invoke a query and return a promise of the response. This can be useful for memoized caching and other situations.
+
 ### Query.stream() => Stream<Object>
 Read Finalizer. The stream is a mongo [read stream](http://mongodb.github.com/node-mongodb-native/api-generated/cursorstream.html) of documents matching your query.
 

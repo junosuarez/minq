@@ -1,6 +1,6 @@
 {
   "name": "minq",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "fluent queries for mongodb using promises",
   "main": "index.js",
   "scripts": {
