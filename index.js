@@ -48,7 +48,10 @@ Query.prototype = {
   take: limit,
   orderBy: sort,
   first: one, // note, does not throw (unlike linq), equivalent to firstOrDefault
-  firstOrDefault: one
+  firstOrDefault: one,
+  // convenience
+  byId: byId,
+  byIds: byIds
 }
 
 // query
@@ -389,6 +392,16 @@ function ObjectId(id) {
     return new mongodb.ObjectID(id.toString())
   }
   return new mongodb.ObjectID()
+}
+
+function byId(id) {
+  this.where({_id: ObjectId(id) })
+  return this
+}
+
+function byIds(ids) {
+  this.where({_id: {$in: ids.map(ObjectId)} })
+  return this
 }
 
 module.exports.ObjectId = ObjectId

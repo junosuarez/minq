@@ -15,7 +15,8 @@
   "devDependencies": {
     "chai": "~1.5.0",
     "sinon": "~1.5.2",
-    "chai-interface": "~1.1.0"
+    "chai-interface": "~1.1.0",
+    "mocha": "~1.8.1"
   },
   "dependencies": {
     "q": "~0.9.0",

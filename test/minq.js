@@ -73,7 +73,9 @@ describe('minq', function () {
         update: Function,
         upsert: Function,
         remove: Function,
-        removeAll: Function
+        removeAll: Function,
+        byId: Function,
+        byIds: Function
       })
     })
   })
