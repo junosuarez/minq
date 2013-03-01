@@ -34,6 +34,8 @@ Query.prototype = {
   //finalizers
   toArray: toArray,
   one: one,
+  deferOne: deferOne,
+  deferToArray: deferToArray,
   stream: stream,
   count: count,
   // mutators
@@ -51,7 +53,24 @@ Query.prototype = {
   firstOrDefault: one,
   // convenience
   byId: byId,
-  byIds: byIds
+  byIds: byIds,
+}
+
+// deferred
+// returns a function which executes the query
+// *thunk*
+function deferOne() {
+  var self = this;
+  return function () {
+    return self.one()
+  }
+}
+
+function deferToArray() {
+  var self = this;
+  return function () {
+    return self.toArray()
+  }
 }
 
 // query
@@ -338,11 +357,16 @@ function getCursor(self, cb) {
       db.collection(self._.collection, function (err, collection) {
         if (err) { return cb(err) }
         var q = [self._.query]
-        if (self._.projection) { q.push(self._.projection) }
+        if (self._.projection) {
+          q.push(self._.projection)
+        } else {
+          q.push({}) // select all
+        }
         q.push(self._.options)
         log('from ', self._.collection)
         log('where ', q[0])
         if (self._.projection) { log('select ', q[1]) }
+          console.log(q)
         cb(null, collection.find.apply(collection, q))
       })
     } catch (e) {

@@ -75,7 +75,9 @@ describe('minq', function () {
         remove: Function,
         removeAll: Function,
         byId: Function,
-        byIds: Function
+        byIds: Function,
+        deferToArray: Function,
+        deferOne: Function
       })
     })
   })
