@@ -367,7 +367,6 @@ function getCursor(self, cb) {
         log('from ', self._.collection)
         log('where ', q[0])
         if (self._.projection) { log('select ', q[1]) }
-          console.log(q)
         cb(null, collection.find.apply(collection, q))
       })
     } catch (e) {
