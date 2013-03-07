@@ -119,8 +119,11 @@ function skip(skip) {
 
 // @return Promise<Array>
 function toArray() {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
 
   getCursor(self, function (err, cursor) {
     if (err) { return dfd.reject(err) }
@@ -137,8 +140,11 @@ function toArray() {
 
 // @return Promise<Object>
 function one() {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
 
   self._.options.limit = 1
 
@@ -159,6 +165,11 @@ function one() {
 function stream() {
   var stream = through(function (data) { this.queue(data) })
   var self = this
+  if (self._.err) {
+    stream.emit('error', self._.err)
+    return stream
+  }
+
 
   getCursor(self, function (err, cursor) {
     if (err) {
@@ -177,8 +188,11 @@ function stream() {
 
 // @return Promise<Number>
 function count() {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
 
   getCursor(self, function (err, cursor) {
     if (err) { return dfd.reject(err) }
@@ -199,8 +213,11 @@ function count() {
 // @param doc Object|Array<Object>
 // @return Promise<Object>|Promise<Array<Object>>
 function insert (doc) {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
 
   getCollection(self, function (err, collection) {
     if (err) { return dfd.reject(err) }
@@ -218,8 +235,11 @@ function insert (doc) {
 // @param changes Object - a mongodb setter/unsetter
 // @return Promise<Number> - count of updated documents
 function update(changes) {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
   var restoreId = false
 
 
@@ -248,8 +268,11 @@ function update(changes) {
 // @param changes Object - a mongodb setter/unsetter
 // @return Promise<Number> - count of updated documents
 function upsert(setter) {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
   var restoreId = false
 
   self._.options.upsert = true
@@ -276,11 +299,14 @@ function upsert(setter) {
 // Removes documents matching the `where` query from a collection
 // @return Promise<Number> - count of removed documents
 function remove() {
-  if (Object.keys(this._.query).length === 0) {
-    return Q.reject('No `where` query specified. Use minq.removeAll to remove all documents.')
+  var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  if (Object.keys(self._.query).length === 0) {
+    return Q.reject(new Error('No `where` query specified. Use minq.removeAll to remove all documents.'))
   }
   var dfd = Q.defer()
-  var self = this
   log(self._.options)
   log('remove')
 
@@ -297,8 +323,11 @@ function remove() {
 // Removes all documents from a collection
 // @return Promise<Number> - count of removed documents
 function removeAll() {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
   log('removeAll')
 
   getCollection(self, function (err, collection) {
@@ -314,8 +343,11 @@ function removeAll() {
 // Drops an entire collection
 // @return Promise
 function drop(collection) {
-  var dfd = Q.defer()
   var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
   log('drop')
 
   if (collection) {
@@ -421,7 +453,8 @@ function ObjectId(id) {
 
 function byId(id) {
   if (!id) {
-    return Q.reject(new Error('id must not be blank'))
+    this._.err = new Error('id must not be blank')
+    return this
   }
 
   this.where({_id: ObjectId(id) })
@@ -430,7 +463,8 @@ function byId(id) {
 
 function byIds(ids) {
   if (!Array.isArray(ids)) {
-    return Q.reject(new Error('ids must be an Array'))
+    this._.err = new Error('ids must be an Array')
+    return this
   }
 
   this.where({_id: {$in: ids.map(ObjectId)} })
@@ -444,8 +478,6 @@ module.exports.like = like
 function like(string) {
   return new RegExp(quotemeta(string), 'i')
 }
-
-
 
 function log() {
   if (!module.exports.verbose) { return }
