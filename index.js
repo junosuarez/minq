@@ -53,7 +53,7 @@ Query.prototype = {
   firstOrDefault: one,
   // convenience
   byId: byId,
-  byIds: byIds,
+  byIds: byIds
 }
 
 // deferred
@@ -346,6 +346,7 @@ function getCollection(self, cb) {
         return cb(null, collection)
       })
     } catch (e) {
+      if (!db) { cb(new Error('db not specified'))}
       cb(e)
     }
   })
@@ -370,6 +371,7 @@ function getCursor(self, cb) {
         cb(null, collection.find.apply(collection, q))
       })
     } catch (e) {
+      if (!db) { cb(new Error('db not specified'))}
       cb(e)
     }
   })
@@ -419,11 +421,19 @@ function ObjectId(id) {
 }
 
 function byId(id) {
+  if (!id) {
+    return Q.reject(new Error('id must not be blank'))
+  }
+
   this.where({_id: ObjectId(id) })
   return this
 }
 
 function byIds(ids) {
+  if (!Array.isArray(ids)) {
+    return Q.reject(new Error('ids must be an Array'))
+  }
+
   this.where({_id: {$in: ids.map(ObjectId)} })
   return this
 }
@@ -465,4 +475,8 @@ function connect(connectionString, options) {
     return connection = db;
   })
 
+}
+
+module.exports.use = function (plugin) {
+  plugin(module.exports)
 }
