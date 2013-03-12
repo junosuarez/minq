@@ -87,6 +87,8 @@ alias: `from`
 ### Query.where(query) => Query
 (optional) `query` is a mongodb [query object](http://mongodb.github.com/node-mongodb-native/markdown-docs/queries.html#query-object), with standard `$` operators
 
+`where` can be called multiple times to add multiple query terms. Mongodb joins them with logical `AND`, see [$and](http://docs.mongodb.org/manual/reference/operator/and/#_S_and).
+
 ### Query.select(fields) => Query
 (optional) `fields` is a mongodb projection object, with keys corresponding to the fields of the document you want to return
 

@@ -83,7 +83,7 @@ function collection(collection) {
 
 // @param query Object
 function where(query) {
-  this._.query = query
+  this._.query = extend(this._.query, query)
   return this
 }
 
@@ -506,6 +506,15 @@ function connect(connectionString, options) {
     return connection = db;
   })
 
+}
+
+function extend(obj, obj2) {
+  for (var key in obj2) {
+    if (obj2.hasOwnProperty(key)) {
+      obj[key] = obj2[key]
+    }
+  }
+  return obj
 }
 
 module.exports.use = function (plugin) {

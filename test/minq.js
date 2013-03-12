@@ -81,4 +81,22 @@ describe('minq', function () {
       })
     })
   })
+
+  describe('Query#where', function () {
+    it('is additive', function () {
+      var query = minq()
+      query.where({foo: 'bar'})
+      query._.query.should.deep.equal({foo: 'bar'})
+      query.where({baz: 'qux'})
+      query._.query.should.deep.equal({foo: 'bar', baz: 'qux'})
+    })
+  })
+
+  describe('Query#byId', function () {
+    it('can be combined with a `where` clause', function () {
+      var oid = minq.ObjectId('513f8bd6f8fea70000000001')
+      var query = minq().byId(oid).where({foo: 'baz'})
+      query._.query.should.deep.equal({_id: oid, foo: 'baz'})
+    })
+  })
 })
