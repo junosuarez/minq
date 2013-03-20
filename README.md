@@ -60,11 +60,13 @@ or, somewhat linq-ier:
 
 minq queries are contstructed starting with a db and collection, then by adding various options and constraints, and ending with a finalizer. Finalizers return a [Q promise](https://npmjs.org/package/q).
 
-Read Finalizers are: `.toArray` `.one` `.stream` `.count`
+For `.one` and `.toArray`, an .`expect(number)` option can be used. If the query does not match the expected number, the promise will be rejected.
+
+Read Finalizers are: `.toArray` `.one` `.stream` `.count` `.assertExists` `.checkExists`
 
 Note, `.stream` returns a node Stream, not a promise
 
-Mutator Finalizers are: `.insert` `.update` `.upsert` `.remove` `.removeAll`
+Mutator Finalizers are: `.insert` `.update` `.upsert` `.remove` `.removeAll` `.pull` `.findAndModify`
 
 ## api reference
 

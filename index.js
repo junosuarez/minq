@@ -31,6 +31,7 @@ Query.prototype = {
   sort: sort,
   limit: limit,
   skip: skip,
+  expect: expect,
   //finalizers
   toArray: toArray,
   one: one,
@@ -38,9 +39,13 @@ Query.prototype = {
   deferToArray: deferToArray,
   stream: stream,
   count: count,
+  checkExists: checkExists,
+  assertExists: assertExists,
   // mutators
   insert: insert,
   update: update,
+  findAndModify: findAndModify,
+  pull: pull,
   upsert: upsert,
   remove: remove,
   removeAll: removeAll,
@@ -53,7 +58,11 @@ Query.prototype = {
   firstOrDefault: one,
   // convenience
   byId: byId,
-  byIds: byIds
+  byIds: byIds,
+  // static
+  ObjectId: ObjectId,
+  ObjectID: ObjectId,
+  like: like
 }
 
 // deferred
@@ -131,7 +140,11 @@ function toArray() {
     log('toArray')
     cursor.toArray(function (err, array) {
       if (err) { return dfd.reject(err) }
-        dfd.resolve(array || [])
+      var actualCount = array ? array.length : 0
+      if (typeof self._.expected === 'number' && self._.expected !== actualCount) {
+        return dfd.reject(new Error('Expected ' + self._.expected + ' document' + (self._.expected === 1 ? '' : 's') +', but matched ' + actualCount))
+      }
+      dfd.resolve(array || [])
     })
   })
 
@@ -154,7 +167,11 @@ function one() {
     log('one')
     cursor.nextObject(function (err, doc) {
       if (err) { return dfd.reject(err) }
-        dfd.resolve(doc || null)
+      var actualCount = doc ? 1 : 0;
+      if (typeof self._.expected === 'number' && self._.expected !== actualCount) {
+        return dfd.reject(new Error('Expected ' + self._.expected + ' document' + (self._.expected === 1 ? '' : 's') +', but matched ' + actualCount))
+      }
+      dfd.resolve(doc || null)
     })
   })
 
@@ -263,6 +280,87 @@ function update(changes) {
   })
 
   return dfd.promise
+}
+
+// @param changes Object - a mongodb setter/unsetter
+// @returns Promise<Document> - the document after the changes object has been applied
+function findAndModify(changes) {
+  var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  return Q.promise(function (resolve, reject) {
+    self._.options.new = true
+    self._.options.updsert = false
+
+    getColection(self, function (err, collection) {
+      if (err) { return reject(err) }
+      log(self._.options)
+      log('findAndModify', self._.query, changes)
+      collection.findAndModify(self._.query, self._.options.sort, changes, self._.options, function (err, result) {
+        if (err) { return reject(err) }
+        resolve(result)
+      })
+    })
+  })
+}
+
+// @returns Promise<Document> - the matching document which was removed
+// from the collection
+function pull() {
+  var self = this
+  if (self._.err) { return Q.reject(self._.err) }
+  return Q.promise(function (resolve, reject) {
+    self._.options.remove = true
+    getCollection(self, function (err, collection) {
+      if (err) { return reject(err) }
+      log(self._.options)
+      log('pull', self._.query)
+      collection.findAndModify(self._.query, self._.options.sort, {}, self._.options, function (err, result) {
+        if (err) { return reject(err) }
+        resolve(result)
+      })
+    })
+  })
+}
+
+// @returns Query
+function expect(count) {
+  this._.expected = count
+  return this
+}
+
+// @returns Promise. Rejected if the number of results does not match the expected count
+function assertExists(expectedCount) {
+  var self = this
+  return self.checkExists(expectedCount).then(function (exists) {
+    if (!exists) {
+      throw new Error('Expected ' + expectedCount + ' document' + (expectedCount !== 1 ? 's' : '') +
+        ', but found ' + self._.count)
+    }
+  })
+}
+
+// @returns Promise<Boolean> - true iff number of results matches the expected count
+function checkExists(expectedCount) {
+  expectedCount = expectedCount || 1
+  var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+
+  return Q.promise(function (resolve, reject) {
+    getCursor(self, function (err, cursor) {
+      if (err) { return reject(err) }
+      log(self._.options)
+      log('checkExists', self._.expected, self._.query)
+      cursor.count(function (err, count) {
+        if (err) { return reject(err) }
+          self._.count = count
+        return count === expectedCount
+      })
+    })
+  })
 }
 
 // @param changes Object - a mongodb setter/unsetter
