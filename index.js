@@ -45,6 +45,7 @@ Query.prototype = {
   insert: insert,
   update: update,
   findAndModify: findAndModify,
+  modifyAndFind: modifyAndFind,
   pull: pull,
   upsert: upsert,
   remove: remove,
@@ -283,8 +284,31 @@ function update(changes) {
 }
 
 // @param changes Object - a mongodb setter/unsetter
-// @returns Promise<Document> - the document after the changes object has been applied
+// @returns Promise<Document> - the document BEFORE the changes object has been applied
 function findAndModify(changes) {
+  var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  return Q.promise(function (resolve, reject) {
+    self._.options.new = false
+    self._.options.updsert = false
+
+    getColection(self, function (err, collection) {
+      if (err) { return reject(err) }
+      log(self._.options)
+      log('findAndModify', self._.query, changes)
+      collection.findAndModify(self._.query, self._.options.sort, changes, self._.options, function (err, result) {
+        if (err) { return reject(err) }
+        resolve(result)
+      })
+    })
+  })
+}
+
+// @param changes Object - a mongodb setter/unsetter
+// @returns Promise<Document> - the document AFTER the changes object has been applied
+function modifyAndFind(changes) {
   var self = this
   if (self._.err) {
     return Q.reject(self._.err)
@@ -304,6 +328,7 @@ function findAndModify(changes) {
     })
   })
 }
+
 
 // @returns Promise<Document> - the matching document which was removed
 // from the collection
