@@ -275,7 +275,7 @@ function update(changes) {
     log('update', changes)
     collection.update(self._.query, changes, self._.options, function (err, result) {
       if (err) { dfd.reject(err) }
-      if (restoreId) { setter._id = restoreId }
+      if (restoreId) { changes._id = restoreId }
       dfd.resolve(result)
     })
   })
@@ -392,7 +392,7 @@ function checkExists(expectedCount) {
 
 // @param changes Object - a mongodb setter/unsetter
 // @return Promise<Number> - count of updated documents
-function upsert(setter) {
+function upsert(changes) {
   var self = this
   if (self._.err) {
     return Q.reject(self._.err)
@@ -402,18 +402,18 @@ function upsert(setter) {
 
   self._.options.upsert = true
 
-  if ('_id' in setter) {
-    self._.query._id = restoreId = setter._id
-    delete setter._id
+  if ('_id' in changes) {
+    self._.query._id = restoreId = changes._id
+    delete changes._id
   }
 
   getCollection(self, function (err, collection) {
     if (err) { return dfd.reject(err) }
     log(self._.options)
-    log('upsert', setter)
+    log('upsert', changes)
     collection.update(self._.query, '_id', changes, self._.options, function (err, result) {
       if (err) { dfd.reject(err) }
-      if (restoreId) { setter._id = restoreId }
+      if (restoreId) { changes._id = restoreId }
       dfd.resolve(result)
     })
   })
