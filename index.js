@@ -292,7 +292,8 @@ function findAndModify(changes) {
   }
   return Q.promise(function (resolve, reject) {
     self._.options.new = false
-    self._.options.updsert = false
+    self._.options.upsert = false
+    self._.options.sort = self._.options.sort || {_id: 1}
 
     getCollection(self, function (err, collection) {
       if (err) { return reject(err) }
@@ -315,7 +316,8 @@ function modifyAndFind(changes) {
   }
   return Q.promise(function (resolve, reject) {
     self._.options.new = true
-    self._.options.updsert = false
+    self._.options.upsert = false
+    self._.options.sort = self._.options.sort || {_id: 1}
 
     getCollection(self, function (err, collection) {
       if (err) { return reject(err) }
