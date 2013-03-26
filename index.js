@@ -251,39 +251,6 @@ function insert (doc) {
 }
 
 // @param changes Object - a mongodb setter/unsetter
-// @return Promise<Number> - count of updated documents
-function update(changes) {
-  var self = this
-  if (self._.err) {
-    return Q.reject(self._.err)
-  }
-  var dfd = Q.defer()
-  var restoreId = false
-
-
-  self._.options.upsert = false
-  self._.options['new'] = true
-
-  if ('_id' in changes) {
-    self._.query._id = restoreId = changes._id
-    delete changes._id
-  }
-
-  getCollection(self, function (err, collection) {
-    if (err) { return dfd.reject(err) }
-    log(self._.options)
-    log('update', changes)
-    collection.update(self._.query, changes, self._.options, function (err, result) {
-      if (err) { dfd.reject(err) }
-      if (restoreId) { changes._id = restoreId }
-      dfd.resolve(result)
-    })
-  })
-
-  return dfd.promise
-}
-
-// @param changes Object - a mongodb setter/unsetter
 // @returns Promise<Document> - the document BEFORE the changes object has been applied
 function findAndModify(changes) {
   var self = this
@@ -392,6 +359,39 @@ function checkExists(expectedCount) {
 
 // @param changes Object - a mongodb setter/unsetter
 // @return Promise<Number> - count of updated documents
+function update(changes) {
+  var self = this
+  if (self._.err) {
+    return Q.reject(self._.err)
+  }
+  var dfd = Q.defer()
+  var restoreId = false
+
+
+  self._.options.upsert = false
+  self._.options['new'] = true
+
+  if ('_id' in changes) {
+    self._.query._id = restoreId = changes._id
+    delete changes._id
+  }
+
+  getCollection(self, function (err, collection) {
+    if (err) { return dfd.reject(err) }
+    log(self._.options)
+    log('update', changes)
+    collection.update(self._.query, changes, self._.options, function (err, result) {
+      if (err) { dfd.reject(err) }
+      if (restoreId) { changes._id = restoreId }
+      dfd.resolve(result)
+    })
+  })
+
+  return dfd.promise
+}
+
+// @param changes Object - a mongodb setter/unsetter
+// @return Promise<Number> - count of updated documents
 function upsert(changes) {
   var self = this
   if (self._.err) {
@@ -411,7 +411,7 @@ function upsert(changes) {
     if (err) { return dfd.reject(err) }
     log(self._.options)
     log('upsert', changes)
-    collection.update(self._.query, '_id', changes, self._.options, function (err, result) {
+    collection.update(self._.query, changes, self._.options, function (err, result) {
       if (err) { dfd.reject(err) }
       if (restoreId) { changes._id = restoreId }
       dfd.resolve(result)
