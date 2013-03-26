@@ -294,7 +294,7 @@ function findAndModify(changes) {
     self._.options.new = false
     self._.options.updsert = false
 
-    getColection(self, function (err, collection) {
+    getCollection(self, function (err, collection) {
       if (err) { return reject(err) }
       log(self._.options)
       log('findAndModify', self._.query, changes)
@@ -317,7 +317,7 @@ function modifyAndFind(changes) {
     self._.options.new = true
     self._.options.updsert = false
 
-    getColection(self, function (err, collection) {
+    getCollection(self, function (err, collection) {
       if (err) { return reject(err) }
       log(self._.options)
       log('findAndModify', self._.query, changes)
