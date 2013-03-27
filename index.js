@@ -404,12 +404,15 @@ function upsert(changes) {
 
   if ('_id' in changes) {
     self._.query._id = restoreId = changes._id
-    delete changes._id
+    if (hasOperators(changes)) {
+      delete changes._id
+    }
   }
 
   getCollection(self, function (err, collection) {
     if (err) { return dfd.reject(err) }
     log(self._.options)
+    log('where', self._.query)
     log('upsert', changes)
     collection.update(self._.query, changes, self._.options, function (err, result) {
       if (err) { dfd.reject(err) }
@@ -530,6 +533,24 @@ function getCursor(self, cb) {
       if (!db) { cb(new Error('db not specified'))}
       cb(e)
     }
+  })
+}
+
+var updateOperators = [
+  '$addToSet',
+  '$pop',
+  '$pull',
+  '$pullAll',
+  '$push',
+  '$pushAll',
+  '$rename',
+  '$set',
+  '$setOnInsert',
+  '$unset']
+
+function hasOperators(obj) {
+  return updateOperators.some(function (op) {
+    return op in obj
   })
 }
 
