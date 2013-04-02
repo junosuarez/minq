@@ -70,47 +70,52 @@ Mutator Finalizers are: `.insert` `.update` `.upsert` `.remove` `.removeAll` `.p
 
 ## api reference
 
-### minq(db) => Query
-where db is a mongodb db connection object
+Uses [jsig](https://github.org/jden/jsig) notation.
 
-### minq.like(string) => RegExp
-builds a RegExp for use with a where clause, `minq.like` helps by escaping characters for you. It creates a case-insensitive regex.
+### minq(db: Object) => Query
+where db is a [mongodb db connection](http://mongodb.github.com/node-mongodb-native/api-generated/db.html) object
 
-### minq.connect(connectionString) => Promise
+### minq.like(pattern: String) => RegExp
+builds a RegExp for use with a where clause, `minq.like` helps by escaping characters for you. It creates a case-insensitive regex. See [like](https://npm.im/like)
+
+### minq.connect(connectionString: String) => Promise
 Set the default connection for minq to use. `connectionString` should be a [MongoDb uri](http://docs.mongodb.org/manual/reference/connection-string/)
 
-### minq.getCollections() =>Promise<[String]>
+### minq.getCollections() => Promise<Array<String>>
 Returns a promise for an array of strings containing the collection names for the default connection.
 
-### Query.collection(collectionName) => Query
+### Query#from(collectionName: String) => Query
 returns a new Query object configured with the collection name.
-alias: `from`
+alias: `Query#collection`
 
-### Query.where(query) => Query
+### Query#where(query: Object) => Query
 (optional) `query` is a mongodb [query object](http://mongodb.github.com/node-mongodb-native/markdown-docs/queries.html#query-object), with standard `$` operators
 
 `where` can be called multiple times to add multiple query terms. Mongodb joins them with logical `AND`, see [$and](http://docs.mongodb.org/manual/reference/operator/and/#_S_and).
 
-### Query.select(fields) => Query
+### Query#select(fields: Object) => Query
 (optional) `fields` is a mongodb projection object, with keys corresponding to the fields of the document you want to return
 
-### Query.sort(by) => Query
+### Query#options(opts: Object) => Query
+(optional) configure any additional options, for example [`{multi: true}`](http://docs.mongodb.org/manual/applications/update/#update-multiple-documents&gsc.tab=0)
+
+### Query#sort(by: Object|Array) => Query
 (optional) `by` is a mongodb [sort order](http://mongodb.github.com/node-mongodb-native/markdown-docs/queries.html#query-options) option.
-alias: `orderBy`
+alias: `Query#orderBy`
 
-### Query.limit(number) => Query
+### Query#limit(number: Number) => Query
 (optional) `number` is a Number for the maximum number of documents you want to return.
-alias: `take`
+alias: `Query#take`
 
-### Query.skip(number) => Query
+### Query#skip(number: Number) => Query
 (optional) `number` is a Number for the number of documents which otherwise match the query that you want to skip in the result
 
-### Query.toArray() => Promise<Array>
+### Query#toArray() => Promise<Array>
 Read Finalizer. The promise is resolved with the array of documents matching your query or an empty array.
 
-### Query.one() => Promise<Object>
+### Query#one() => Promise<Object>
 Read Finalizer. The promise is resolved with the document matching your query or `null`.
-alias: `first`, `firstOrDefault`. Note, `first` does not throw on null, unlike in linq. Think of it as `firstOrDefault`.
+alias: `Query#first`, `Query#firstOrDefault`. Note, `first` does not throw on null, unlike in linq. Think of it as `firstOrDefault`.
 
 ### Query.deferToArray => () => Promise<Array>
 [Thunked](http://en.wikipedia.org/wiki/Thunk_(functional_programming)) `Query.toArray`.
@@ -118,16 +123,16 @@ alias: `first`, `firstOrDefault`. Note, `first` does not throw on null, unlike i
 ### Query.deferOne => () => Promise<Object>
 [Thunked](http://en.wikipedia.org/wiki/Thunk_(functional_programming)) `Query.one`. Other Finalizers begin executing a query immediately. This method returns a function which can be called to invoke a query and return a promise of the response. This can be useful for memoized caching and other situations.
 
-### Query.stream() => Stream<Object>
+### Query.stream() => ReadStream<Object>
 Read Finalizer. The stream is a mongo [read stream](http://mongodb.github.com/node-mongodb-native/api-generated/cursorstream.html) of documents matching your query.
 
-### Query.insert(doc) => Promise<Object>
+### Query.insert(doc: Object) => Promise<Object>
 Mutator Finalizer. Insert a document collection. The promise is the inserted object, including _id if assigned by db.
 
-### Query.update(changes) => Promise<Number>
+### Query.update(changes: Object) => Promise<Number>
 Mutator Finalizer. Update documents in a collection with `changes`, a mongodb [setter or unsetter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update). Use with `Query.where` or include `_id` on the `changes` object. The promise is the count of updated documents.
 
-### Query.upsert(setter) => Promise<Number>
+### Query.upsert(setter: Object) => Promise<Number>
 Mutator Finalizer. Create or update a document in a collection with `setter`, a mongodb [setter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update). The promise is the count of updated documents.
 
 ### Query.remove() => Promise<Number>
@@ -136,7 +141,7 @@ Mutator Finalizer. Remove documents matching a `where` query. The promise is the
 ### Query.removeAll() => Promise<Number>
 Mutator Finalizer. Remove all documents in a collection. The promise is the number of documents removed.
 
-### Query.drop(collection) => Promise
+### Query.drop(collection: String) => Promise
 Finalizer. Drop an entire collection.
 
 ## running the tests
