@@ -32,6 +32,7 @@ Query.prototype = {
   limit: limit,
   skip: skip,
   expect: expect,
+  options: options,
   //finalizers
   toArray: toArray,
   one: one,
@@ -121,6 +122,12 @@ function limit(limit) {
 // @param skip Number
 function skip(skip) {
   this._.options.skip = skip
+  return this
+}
+
+// @param opts Object
+function options(opts) {
+  extend(this._.options, opts)
   return this
 }
 

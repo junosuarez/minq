@@ -92,6 +92,14 @@ describe('minq', function () {
     })
   })
 
+  describe('Query#options', function () {
+    it('can set arbitrary options', function () {
+      var query = minq()
+      query.options({multi: true})
+      query._.options.multi.should.equal(true)
+    })
+  })
+
   describe('Query#byId', function () {
     it('can be combined with a `where` clause', function () {
       var oid = minq.ObjectId('513f8bd6f8fea70000000001')
