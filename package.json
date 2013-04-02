@@ -1,6 +1,6 @@
 {
   "name": "minq",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "description": "fluent queries for mongodb using promises",
   "keywords": [
     "mongodb",
