@@ -106,5 +106,19 @@ describe('minq', function () {
       var query = minq().byId(oid).where({foo: 'baz'})
       query._.query.should.deep.equal({_id: oid, foo: 'baz'})
     })
+  
+    it('takes plain old strings', function () {
+      var id = 'fizzbuzzer'
+      var query = minq().byId(id)
+      query._.query.should.deep.equal({_id: id})
+    })
+
+    it('coerces to a BSON ObjectId if passed a string which is a valid oid', function () {
+      var str = '513f8bd6f8fea70000000001'
+      var query = minq().byId(str)
+      query._.query._id.should.be.an('object')
+      query._.query._id.toString().should.equal(str)
+    })
   })
+
 })
