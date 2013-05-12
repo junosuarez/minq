@@ -87,15 +87,22 @@ function deferToArray() {
 // query
 //
 
-// @param collection String
+// @param collection: String
 function collection(collection) {
   return new Query(this._.db, collection)
 }
 
-// @param query Object
+// @param query: Object
 function where(query) {
   this._.query = extend(this._.query, query)
   return this
+}
+
+// @param key: String
+function not(key) {
+  var clause = {}
+  clause[key] = {$in: [false, null, undefined]
+  return this.where(clause)
 }
 
 // options
