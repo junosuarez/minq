@@ -3,6 +3,7 @@ var through = require('through')
 var mongodb = require('mongodb')
 var maskurl = require('maskurl')
 var quotemeta = require('quotemeta')
+var utils = require('./utils')
 
 var connection
 
@@ -101,7 +102,7 @@ function where(query) {
 // @param key: String
 function not(key) {
   var clause = {}
-  clause[key] = {$in: [false, null, undefined]
+  clause[key] = {$in: [false, null, undefined]}
   return this.where(clause)
 }
 
@@ -611,13 +612,19 @@ function ObjectId(id) {
   return new mongodb.ObjectID()
 }
 
+function coerceObjectId (id) {
+  return utils.isObjectId(id)
+    ? ObjectId(id)
+    : id
+}
+
 function byId(id) {
   if (!id) {
     this._.err = new Error('id must not be blank')
     return this
   }
 
-  this.where({_id: ObjectId(id) })
+  this.where({_id: coerceObjectId(id) })
   return this
 }
 
@@ -627,7 +634,7 @@ function byIds(ids) {
     return this
   }
 
-  this.where({_id: {$in: ids.map(ObjectId)} })
+  this.where({_id: {$in: ids.map(coerceObjectId)} })
   return this
 }
 
