@@ -144,3 +144,7 @@ jden <jason@denizac.org>
 
 ## license
 MIT. (c) jden <jason@denizac.org>. See LICENSE.md.
+
+<a href="http://promises-aplus.github.io/promises-spec/"><img src="https://secure.gravatar.com/avatar/1f78ca80239fd9154da65f3678b834c2?s=400&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="200" /></a>
+
+<img src="http://upload.wikimedia.org/wikipedia/en/e/eb/MongoDB_Logo.png"/>
