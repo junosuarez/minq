@@ -1,62 +1,51 @@
 # minq
 fluent queries for mongodb using promises
 
-inspired by linq. WIP.
-
 ## installation
 
     $ npm install minq
 
-## usage
+## usage example
 
     var minq = require('minq')
 
     minq.connect(connectionString)
 
     minq
-      .collection('foo')
+      .from('foo')
       .where({name: minq.like('John')})
       .select({name: 1, email: 1})
       .limit(1000)
       .toArray()
 
     minq
-      .collection('foo')
+      .from('foo')
       .skip(20)
       .limit(50)
       .sort('name')
       .toArray()
 
-or, somewhat linq-ier:
-
     minq
       .from('foo')
-      .skip(20)
-      .take(50)
-      .orderBy('name')
-      .toArray()
-
-    minq
-      .collection('foo')
-      .where({name: /foo/})
-      .select({name: 1, email: 1})
-      .one()
-
-    minq
-      .collection('foo')
       .stream()
 
     minq
-      .collection('foo')
+      .from('foo')
       .where({email: /lol\.com$/)
       .count()
 
     minq
-      .collection('foo')
+      .from('foo')
       .insert({name: 'Melissa', email: 'm@m.com'})
 
     minq
       .drop('foo')
+
+## tools
+- test harness with [rope](https://github.com/jden/rope)
+- CLI repl with [minq-repl](https://github.com/jden/minq-repl)
+
+## good to know
 
 minq queries are contstructed starting with a db and collection, then by adding various options and constraints, and ending with a finalizer. Finalizers return a [Q promise](https://npmjs.org/package/q).
 
