@@ -109,9 +109,17 @@ function not(key) {
 // options
 //
 
-// @param projection Object
+// (Object|Array<String>) => MinqQuery
 function select(projection) {
-  this._.projection = projection
+  // accept arrays of field names to include (dot-notation ok)
+  if (Array.isArray(projection)) {
+    this._.projection = projection.reduce(function (projection, field) {
+      projection[field] = true
+      return projection
+    }, {})
+  } else {
+    this._.projection = projection
+  }
   return this
 }
 

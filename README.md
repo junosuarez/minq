@@ -14,7 +14,7 @@ fluent queries for mongodb using promises
     minq
       .from('foo')
       .where({name: minq.like('John')})
-      .select({name: 1, email: 1})
+      .select(['name', 'email', 'homeAddress.zipCode'])
       .limit(1000)
       .toArray()
 

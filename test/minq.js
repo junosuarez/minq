@@ -100,13 +100,20 @@ describe('minq', function () {
     })
   })
 
+  describe('Query#select', function () {
+    it('takes arrays of string field names', function () {
+      var query = minq().select(['a','b','c'])
+      query._.projection.should.deep.equal({a: true, b: true, c: true})
+    })
+  })
+
   describe('Query#byId', function () {
     it('can be combined with a `where` clause', function () {
       var oid = minq.ObjectId('513f8bd6f8fea70000000001')
       var query = minq().byId(oid).where({foo: 'baz'})
       query._.query.should.deep.equal({_id: oid, foo: 'baz'})
     })
-  
+
     it('takes plain old strings', function () {
       var id = 'fizzbuzzer'
       var query = minq().byId(id)
