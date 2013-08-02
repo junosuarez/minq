@@ -3,6 +3,7 @@ var through = require('through')
 var mongodb = require('mongodb')
 var maskurl = require('maskurl')
 var quotemeta = require('quotemeta')
+var deepClone = require('clone')
 var utils = require('./utils')
 
 var connection
@@ -25,6 +26,7 @@ function Query(db, collection) {
 
 Query.prototype = {
   // query
+  clone: clone,
   collection: collection,
   where: where,
   // options
@@ -87,6 +89,10 @@ function deferToArray() {
 
 // query
 //
+
+function clone() {
+  return deepClone(this)
+}
 
 // @param collection: String
 function collection(collection) {

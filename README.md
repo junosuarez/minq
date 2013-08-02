@@ -73,6 +73,10 @@ Set the default connection for minq to use. `connectionString` should be a [Mong
 ### `minq.getCollections() => Promise<Array<String>>`
 Returns a promise for an array of strings containing the collection names for the default connection.
 
+### `Query#clone() => Query`
+
+Deep clones a query object (most useful before the query has been executed!)
+
 ### `Query#from(collectionName: String) => Query`
 returns a new Query object configured with the collection name.
 alias: `Query#collection`

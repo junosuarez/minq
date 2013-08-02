@@ -128,4 +128,13 @@ describe('minq', function () {
     })
   })
 
+  describe('Query#clone', function () {
+    it('deep clones a Query object', function () {
+      var query = minq().from('foo').byId('blah')
+      var query2 = query.clone()
+      query2.should.deep.equal(query)
+      query2.should.be.instanceof(minq)
+    })
+  })
+
 })

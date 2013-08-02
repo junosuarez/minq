@@ -1,6 +1,6 @@
 {
   "name": "minq",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "fluent queries for mongodb using Promises/A+",
   "keywords": [
     "mongodb",
@@ -31,6 +31,7 @@
     "mongodb": "~1.2.12",
     "maskurl": "~0.1.0",
     "quotemeta": "0.0.0",
-    "to-string": "~0.2.0"
+    "to-string": "~0.2.0",
+    "clone": "~0.1.9"
   }
 }
