@@ -91,7 +91,13 @@ function deferToArray() {
 //
 
 function clone() {
-  return deepClone(this)
+  var c = new Query()
+  c._.db = this._.db
+  c._.collection = this._.collection
+  c._.query = deepClone(this._.query)
+  c._.projection = deepClone(this._.projection)
+  c._.options = deepClone(this._.options)
+  return c
 }
 
 // @param collection: String
