@@ -601,24 +601,6 @@ module.exports.drop = function (collection) {
   return module.exports.collection(collection).drop()
 }
 
-module.exports.getCollections = function () {
-  return Q.when(connection).then(function (db) {
-    var dfd = Q.defer()
-
-    db.collectionNames(function (err, names) {
-      if (err) { return dfd.reject(err) }
-      try {
-        names = names.map(function (x) { return x.name.replace(/^\w*\./, '') })
-        dfd.resolve(names)
-      } catch (e) {
-        return dfd.reject(e)
-      }
-    })
-
-    return dfd.promise
-  })
-}
-
 // convenience
 module.exports.connect = connect
 
@@ -681,6 +663,12 @@ function log() {
 // @return Promise<Function>  returns a function which can be invoked to close the mongodb connection
 //
 // for argument syntax, see http://mongodb.github.com/node-mongodb-native/driver-articles/mongoclient.html
+//
+// (connectionString: String, options?) => MinqDb
+// e.g.:
+// minq.connect('cs').then(function (db) {
+//  db.myCollection.count()
+// })
 function connect(connectionString, options) {
   log('connecting to', maskurl(connectionString))
 
@@ -688,12 +676,33 @@ function connect(connectionString, options) {
     mongodb.MongoClient.connect,
     connectionString,
     options
-  ).then(function (db){
+  ).then(function (mongodb){
     log('connected')
-    return connection = db;
-  })
+    connection = mongodb;
 
+  return module.exports.getCollections(mongodb)
+    .then(function (collectionNames) {
+      // expose minq service
+      var db = function () {
+        return module.exports(mongodb)
+      }
+
+      // allow easy access to collections,
+      // eg `db.SKUS.byId(foo).then(...)`
+      collectionNames.forEach(function (collection) {
+        Object.defineProperty(db, collection, {
+          enumerable: true,
+          get: function () {
+            return module.exports(mongodb).from(collection)
+          }
+        })
+      })
+
+      return db
+    })
+  })
 }
+
 
 function extend(obj, obj2) {
   for (var key in obj2) {
@@ -703,6 +712,26 @@ function extend(obj, obj2) {
   }
   return obj
 }
+
+// (connection?) => Array<String>
+module.exports.getCollections = function (_connection) {
+  return Q.when(_connection || connection).then(function (db) {
+    var dfd = Q.defer()
+
+    db.collectionNames(function (err, names) {
+      if (err) { return dfd.reject(err) }
+      try {
+        names = names.map(function (x) { return x.name.replace(/^\w*\./, '') })
+        dfd.resolve(names)
+      } catch (e) {
+        return dfd.reject(e)
+      }
+    })
+
+    return dfd.promise
+  })
+}
+
 
 module.exports.use = function (plugin) {
   plugin(module.exports)

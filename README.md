@@ -67,8 +67,24 @@ where db is a [mongodb db connection](http://mongodb.github.com/node-mongodb-nat
 ### `minq.like(pattern: String) => RegExp`
 builds a RegExp for use with a where clause, `minq.like` helps by escaping characters for you. It creates a case-insensitive regex. See [like](https://npm.im/like)
 
-### `minq.connect(connectionString: String) => Promise`
+### `minq.connect(connectionString: String) => Promise<MinqDb>`
 Set the default connection for minq to use. `connectionString` should be a [MongoDb uri](http://docs.mongodb.org/manual/reference/connection-string/)
+
+```
+type MinqDb : {
+  $collectionName: Query
+}
+```
+
+MinqDb is an object with property getters for each collection, similar to the `db` object in `mongoshell`.
+
+Example:
+
+```js
+minq.connect(cs).then(function (db) {
+  return db.users.where({email: /@gmail.com$/}).toArray()
+})
+```
 
 ### `minq.getCollections() => Promise<Array<String>>`
 Returns a promise for an array of strings containing the collection names for the default connection.
