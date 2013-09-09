@@ -5,6 +5,7 @@ var maskurl = require('maskurl')
 var quotemeta = require('quotemeta')
 var deepClone = require('clone')
 var utils = require('./utils')
+var charybdis = require('charybdis')
 
 var connection
 
@@ -61,6 +62,8 @@ Query.prototype = {
   orderBy: sort,
   first: one, // note, does not throw (unlike linq), equivalent to firstOrDefault
   firstOrDefault: one,
+  // operations
+  forEach: forEach,
   // convenience
   byId: byId,
   byIds: byIds,
@@ -237,6 +240,17 @@ function stream() {
   })
 
   return stream
+}
+
+// (iterator: (Object) => Promise?) => Promise
+// Streams the results of a query. If `iterator`
+// returns a promise, will await each of the promises,
+// for example if performing batch updates.
+// Returns a void Promise to rejoin program execution
+// once all results have been iterated.
+function forEach(iterator) {
+  return this.stream()
+    .pipe(charybdis(iterator))
 }
 
 // @return Promise<Number>

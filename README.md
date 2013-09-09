@@ -126,31 +126,38 @@ Read Finalizer. The promise is resolved with the array of documents matching you
 Read Finalizer. The promise is resolved with the document matching your query or `null`.
 alias: `Query#first`, `Query#firstOrDefault`. Note, `first` does not throw on null, unlike in linq. Think of it as `firstOrDefault`.
 
-### `Query.deferToArray => () => Promise<Array>`
+### `Query#deferToArray => () => Promise<Array>`
 [Thunked](http://en.wikipedia.org/wiki/Thunk_(functional_programming)) `Query.toArray`.
 
-### `Query.deferOne => () => Promise<Object>`
+### `Query#deferOne => () => Promise<Object>`
 [Thunked](http://en.wikipedia.org/wiki/Thunk_(functional_programming)) `Query.one`. Other Finalizers begin executing a query immediately. This method returns a function which can be called to invoke a query and return a promise of the response. This can be useful for memoized caching and other situations.
 
-### `Query.stream() => ReadStream<Object>`
+### `Query#stream() => ReadStream<Object>`
 Read Finalizer. The stream is a mongo [read stream](http://mongodb.github.com/node-mongodb-native/api-generated/cursorstream.html) of documents matching your query.
 
-### `Query.insert(doc: Object) => Promise<Object>`
+### `Query#forEach(iterator: (Object) => Promise?) => Promise`
+Read Finalizer. Streams the results of a query. If `iterator`
+returns a promise, will await each of the promises,
+for example if performing batch updates.
+Returns a void Promise to rejoin program execution
+once all results have been iterated.
+
+### `Query#insert(doc: Object) => Promise<Object>`
 Mutator Finalizer. Insert a document collection. The promise is the inserted object, including _id if assigned by db.
 
-### `Query.update(changes: Object) => Promise<Number>`
+### `Query#update(changes: Object) => Promise<Number>`
 Mutator Finalizer. Update documents in a collection with `changes`, a mongodb [setter or unsetter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update). Use with `Query.where` or include `_id` on the `changes` object. The promise is the count of updated documents.
 
-### `Query.upsert(setter: Object) => Promise<Number>`
+### `Query#upsert(setter: Object) => Promise<Number>`
 Mutator Finalizer. Create or update a document in a collection with `setter`, a mongodb [setter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update). The promise is the count of updated documents.
 
-### `Query.remove() => Promise<Number>`
+### `Query#remove() => Promise<Number>`
 Mutator Finalizer. Remove documents matching a `where` query. The promise is the number of documents removed. Rejected if no `where` query is specified.
 
-### `Query.removeAll() => Promise<Number>`
+### `Query#removeAll() => Promise<Number>`
 Mutator Finalizer. Remove all documents in a collection. The promise is the number of documents removed.
 
-### `Query.drop(collection: String) => Promise`
+### `Query#drop(collection: String) => Promise`
 Finalizer. Drop an entire collection.
 
 ## running the tests
