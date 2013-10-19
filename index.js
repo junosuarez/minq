@@ -36,6 +36,7 @@ Query.prototype = {
   limit: limit,
   skip: skip,
   expect: expect,
+  assert: assert,
   options: options,
   //finalizers
   toArray: toArray,
@@ -370,6 +371,12 @@ function pull() {
 // @returns Query
 function expect(count) {
   this._.expected = count
+  return this
+}
+
+// => Query
+function assert(assertion) {
+  this._.assertion = assertion
   return this
 }
 

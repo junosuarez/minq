@@ -137,4 +137,42 @@ describe('minq', function () {
     })
   })
 
+  describe('Query#assert', function () {
+    it('takes a predicate function, eg', function (done) {
+      minq()
+        .from('bears')
+        .where({polar:true})
+        .assert(function (results) {
+          return results.length > 0
+        })
+        .then(done, done)
+    })
+    it('fulfills the value if the predicate is true', function (done) {
+      var predicate = sinon.stub().returns(true)
+      minq()
+        .from('bears')
+        .where({polar:true})
+        .assert(predicate)
+        .then(function (value) {
+          predicate.should.have.been.calledOnce
+          value.should.deep.equal([{polar: true}])
+        })
+        .then(done, done)
+    })
+    it('rejects if the predicate is false', function (done) {
+      var predicate = sinon.stub().returns(false)
+      minq()
+        .from('bears')
+        .where({polar:true})
+        .assert(predicate)
+        .then(null, function (reason) {
+          predicate.should.have.been.calledOnce
+          reason.should.be.instanceof(Error)
+          reason.message.should.equal('Assertion failure')
+        })
+        .then(done, done)
+    })
+
+  })
+
 })
