@@ -30,7 +30,7 @@ proto.run = function (query) {
     case 'removeAll':
       return this['_' + query.command](query)
     default:
-      return Q.reject(new Error('Unknown command:', query.command))
+      return Q.reject(new Error('Unknown command:' + query.command))
   }
 }
 

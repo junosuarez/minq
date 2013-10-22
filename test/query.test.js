@@ -201,7 +201,7 @@ describe('Query', function () {
       var q = new Query(db)
       q.then(function (val) {
         val.should.equal('foo')
-        db.run.should.have.been.calledWith(q)
+        db.run.should.have.been.calledWith(q._)
       })
       .then(done, done)
     })
@@ -214,7 +214,7 @@ describe('Query', function () {
       var q = new Query(db)
       var ws = new stream.Writable
       q.pipe(ws)
-      db.runAsStream.should.have.been.calledWith(q)
+      db.runAsStream.should.have.been.calledWith(q._)
     })
   })
 
@@ -234,7 +234,7 @@ describe('Query', function () {
       q.forEach(iterator).then(function () {
         iterator.should.have.been.calledOnce
         iterator.should.have.been.calledWith(document)
-        db.runAsStream.should.have.been.calledWith(q)
+        db.runAsStream.should.have.been.calledWith(q._)
       })
       .then(done, done)
 
@@ -340,7 +340,7 @@ describe('Query', function () {
           .then(function (result) {
             q._.command.should.equal(command)
             q._.commandArg.should.equal(val)
-            db.run.should.have.been.calledWithExactly(q)
+            db.run.should.have.been.calledWithExactly(q._)
             result.should.equal(out)
           })
           .then(done, done)

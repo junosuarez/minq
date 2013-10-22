@@ -120,7 +120,7 @@ var _checkAssertion = function (assertion) {
 proto.then = function (fulfill, reject) {
   // TODO: guard for db
 
-  return this._.db.run(this)
+  return this._.db.run(this._)
     .then(_checkAssertion(this._.assertion))
     .then(fulfill, reject)
 }
@@ -128,13 +128,13 @@ proto.then = function (fulfill, reject) {
 proto.pipe = function (sink) {
   // TODO: guard for db
   this._.command = 'read'
-  return this._.db.runAsStream(this).pipe(sink)
+  return this._.db.runAsStream(this._).pipe(sink)
 }
 // do charybdis magic
 proto.forEach = function (iterator) {
   // TODO: guard for db, iterator is fn
   this._.command = 'read'
-  return this._.db.runAsStream(this).pipe(charybdis(iterator))
+  return this._.db.runAsStream(this._).pipe(charybdis(iterator))
 }
 
 // mutators
