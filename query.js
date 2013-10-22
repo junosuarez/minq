@@ -15,10 +15,10 @@ var Query = module.exports = function Query(db){
   }
 }
 
-var method = Query.prototype
+var proto = Query.prototype
 
 // initializers
-method.clone = function () {
+proto.clone = function () {
   var q = new Query(this._.db)
   q._.collection = this._.collection
   q._.query = deepClone(this._.query)
@@ -27,24 +27,24 @@ method.clone = function () {
   return q
 }
 
-// query
-method.from = function (collection) {
+// Query
+proto.from = function (collection) {
   this._.collection = collection
   return this
 }
-method.where = function (clause) {
+proto.where = function (clause) {
   this._.query = util.extend(this._.query, clause)
   return this
 }
 
-method.not = function (key) {
+proto.not = function (key) {
   var obj = {}
   obj[key] = {$in: [false, null, undefined]}
   this.where(obj)
   return this
 }
 
-method.select = function (projection) {
+proto.select = function (projection) {
   // accept arrays of field names to include (dot-notation ok)
   if (Array.isArray(projection)) {
     this._.projection = projection.reduce(function (projection, field) {
@@ -56,35 +56,35 @@ method.select = function (projection) {
   }
   return this
 }
-method.limit = function (number) {
+proto.limit = function (number) {
   this._.options.limit = number
   return this
 }
-method.skip = function (number) {
+proto.skip = function (number) {
   this._.options.skip = number
   return this
 }
-method.sort = function (sort) {
+proto.sort = function (sort) {
   this._.options.sort = sort
   return this
 }
-method.options = function (options) {
+proto.options = function (options) {
   this._.options = util.extend(this._.options, options)
   return this
 }
 // returns scalar result rather than collection
-method.first = function () {
+proto.first = function () {
   this._.first = true
   this.limit(1)
   return this
 }
 
-method.byId = function (id) {
+proto.byId = function (id) {
   return this
     .where({_id: id})
     .first()
 }
-method.byIds = function (ids) {
+proto.byIds = function (ids) {
   if (!Array.isArray(ids)) {
     return this.error = new TypeError('ids must be an Array')
   }
@@ -93,11 +93,11 @@ method.byIds = function (ids) {
     .limit(ids.length)
 }
 
-method.count = command('count')
-method.exists = command('exists')
+proto.count = command('count')
+proto.exists = command('exists')
 
 // finalizers
-method.assert = function (assertion, message) {
+proto.assert = function (assertion, message) {
   if (message) {
     assertion.message = message
   }
@@ -117,7 +117,7 @@ var _checkAssertion = function (assertion) {
 
 // forcers
 // fetch result set as promise
-method.then = function (fulfill, reject) {
+proto.then = function (fulfill, reject) {
   // TODO: guard for db
 
   return this._.db.run(this)
@@ -125,27 +125,27 @@ method.then = function (fulfill, reject) {
     .then(fulfill, reject)
 }
 // fetch result set as stream
-method.pipe = function (sink) {
+proto.pipe = function (sink) {
   // TODO: guard for db
   this._.command = 'read'
   return this._.db.runAsStream(this).pipe(sink)
 }
 // do charybdis magic
-method.forEach = function (iterator) {
+proto.forEach = function (iterator) {
   // TODO: guard for db, iterator is fn
   this._.command = 'read'
   return this._.db.runAsStream(this).pipe(charybdis(iterator))
 }
 
 // mutators
-method.insert = command('insert')
-method.update = command('update')
-method.findAndModify = command('findAndModify')
-method.modifyAndFind = command('modifyAndFind')
-method.pull = command('pull')
-method.upsert = command('upsert')
-method.remove = command('remove')
-method.removeAll = command('removeAll')
+proto.insert = command('insert')
+proto.update = command('update')
+proto.findAndModify = command('findAndModify')
+proto.modifyAndFind = command('modifyAndFind')
+proto.pull = command('pull')
+proto.upsert = command('upsert')
+proto.remove = command('remove')
+proto.removeAll = command('removeAll')
 
 
 function command(name) {
