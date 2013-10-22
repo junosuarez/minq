@@ -251,17 +251,115 @@ describe('MongoDb', function () {
       .then(done, done)
 
     })
+    it('returns false if 0', function (done) {
+
+      var count = sinon.stub().returns(Q(0))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {a: 1}
+      var mdb = new MongoDb()
+      mdb._count = count
+
+      mdb._exists(q).then(function (val) {
+        val.should.equal(false)
+        count.should.have.been.calledWithExactly(q.query)
+
+      })
+      .then(done, done)
+
+    })
   })
   describe('#_insert', function () {
-    it('exists', function () {
+    it('calls underlying insert', function (done) {
+
+      var insert = function (val, options, callback) {
+        insert.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({insert:insert}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.command = 'insert'
+      q.commandArg = {foo: 'doc'}
+      q.options = {}
       var mdb = new MongoDb()
-      mdb._insert()
+      mdb._collection = collection
+
+      mdb._insert(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        insert.args[0].should.equal(q.commandArg)
+        insert.args[1].should.equal(q.options)
+      })
+      .then(done, done)
+
     })
   })
   describe('#_update', function () {
-    it('exists', function () {
+    it('calls underlying update', function (done) {
+
+      var update = function (query, val, options, callback) {
+        update.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({update:update}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {}
+      q.command = 'update'
+      q.commandArg = {foo: 'doc'}
+      q.options = {}
       var mdb = new MongoDb()
-      mdb._update()
+      mdb._collection = collection
+
+      mdb._update(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        update.args[0].should.equal(q.query)
+        update.args[1].should.equal(q.commandArg)
+        update.args[2].should.equal(q.options)
+      })
+      .then(done, done)
+
+    })
+    it('converts included ._id property to where clause', function (done) {
+
+      var update = function (query, val, options, callback) {
+        console.log(val)
+        update.args = arguments
+        update.args[0] = JSON.parse(JSON.stringify(update.args[0]))
+        update.args[1] = JSON.parse(JSON.stringify(update.args[1]))
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({update:update}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.command = 'update'
+      q.query = {}
+      q.commandArg = {_id: 23, foo: 'doc'}
+      var mdb = new MongoDb()
+      mdb._collection = collection
+
+      mdb._update(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        update.args[0]._id.should.equal(23)
+        update.args[1].should.not.have.property('_id')
+        //(update.args[0].isPrototypeOf(q.commandArg)).should.be.true
+
+      })
+      .then(done, done)
+
     })
   })
   describe('#_findAndModify', function () {

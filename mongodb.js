@@ -107,7 +107,45 @@ proto._count = function (query) {
 // (Query) => Promise<Boolean>
 proto._exists = function (query) {
   return this._count(query.query).then(function (count) {
-    console.log('count', count)
     return count > 0
+  })
+}
+
+// (Query) => Promise
+proto._insert = function (query) {
+  return this._collection(query).then(function (collection){
+    return Q.ninvoke(collection, 'insert', query.commandArg, query.options)
+  })
+}
+
+proto._update = function (query) {
+  return this._collection(query).then(function (collection){
+
+    var restoreId
+    // mongodb doesn't allow a doc to be update with an _id property
+    // so we convert it into a where clause.
+    // Below, we restore it to the query before returning flow back to the
+    // calling function. This is an optimization over copying the entire
+    // document object, although immutability is what we really want.
+    // By reattaching it after the underlying query but before resolving
+    // the promise we can similuate immutability. It's threadsafe because JS.
+    if (query.commandArg._id) {
+      restoreId = query.commandArg._id
+      delete query.commandArg._id
+      query.query._id = restoreId
+    }
+    var op = Q.ninvoke(collection, 'update', query.query, query.commandArg, query.options)
+
+    if (restoreId) {
+      op = op.then(function (val) {
+        query.commandArg._id = restoreId
+        return val
+      }, function (err) {
+        query.commandArg._id = restoreId
+        throw err
+      })
+    }
+
+    return op
   })
 }
