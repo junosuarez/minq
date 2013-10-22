@@ -15,6 +15,7 @@ var proto = MongoDb.prototype
 
 // (Query) => Promise
 proto.run = function (query) {
+  var self = this
   // todo: more robust query checking (valid commands, etc)
   switch(query.command) {
     case 'read':
@@ -28,7 +29,9 @@ proto.run = function (query) {
     case 'upsert':
     case 'remove':
     case 'removeAll':
-      return this['_' + query.command](query)
+      return self._collection().then(function (collection) {
+        return self['_' + query.command](collection, query)
+      })
     default:
       return Q.reject(new Error('Unknown command:' + query.command))
   }
@@ -52,15 +55,17 @@ proto.runAsStream = function (query) {
     })
     return outStream
   }
-
-  this._find(query)
-    .then(function (cursor) {
-      cursor.toStream().pipe(outStream)
-      outStream.end()
-    })
-    .then(null, function (err) {
-      process.nextTick(function () {
-        outStream.emit('error', err)
+  var self = this
+  self._collection(query).then(function (collection) {
+    self._find(collection, query)
+      .then(function (cursor) {
+        cursor.toStream().pipe(outStream)
+        outStream.end()
+      })
+      .then(null, function (err) {
+        process.nextTick(function () {
+          outStream.emit('error', err)
+        })
       })
     })
 
@@ -82,12 +87,9 @@ proto._read = function (query) {
   })
 }
 
-// (Query) => Promise<MongoCursor>
-proto._find = function(query) {
-  return this._collection(query)
-    .then(function (collection) {
-      return Q.ninvoke(collection, 'find', query.query)
-    })
+// (MongoCollection, Query) => Promise<MongoCursor>
+proto._find = function(collection, query) {
+  return Q.ninvoke(collection, 'find', query.query)
 }
 
 // (Query) => Promise<MongoCollection>
@@ -97,105 +99,95 @@ proto._collection = function(query) {
   })
 }
 
-// (Query) => Promise<Number>
-proto._count = function (query) {
-  return this._collection(query).then(function (collection) {
+// (MongoCollection, Query) => Promise<Number>
+proto._count = function (collection, query) {
     return collection.count(query.query)
-  })
 }
 
-// (Query) => Promise<Boolean>
-proto._exists = function (query) {
+// (MongoCollection?, Query) => Promise<Boolean>
+proto._exists = function (collection, query) {
   return this._count(query.query).then(function (count) {
     return count > 0
   })
 }
 
 // (Query) => Promise
-proto._insert = function (query) {
-  return this._collection(query).then(function (collection){
-    return Q.ninvoke(collection, 'insert', query.commandArg, query.options)
-  })
+proto._insert = function (collection, query) {
+  return Q.ninvoke(collection, 'insert', query.commandArg, query.options)
 }
 
 // (Query) => Promise
-proto._update = function (query) {
-  return this._collection(query).then(function (collection){
+proto._update = function (collection, query) {
+  var restoreId
+  // mongodb doesn't allow a doc to be update with an _id property
+  // so we convert it into a where clause.
+  // Below, we restore it to the query before returning flow back to the
+  // calling function. This is an optimization over copying the entire
+  // document object, although immutability is what we really want.
+  // By reattaching it after the underlying query but before resolving
+  // the promise we can similuate immutability. It's threadsafe because JS.
+  if (query.commandArg._id) {
+    restoreId = query.commandArg._id
+    delete query.commandArg._id
+    query.query._id = restoreId
+  }
+  var op = Q.ninvoke(collection, 'update', query.query, query.commandArg, query.options)
 
-    var restoreId
-    // mongodb doesn't allow a doc to be update with an _id property
-    // so we convert it into a where clause.
-    // Below, we restore it to the query before returning flow back to the
-    // calling function. This is an optimization over copying the entire
-    // document object, although immutability is what we really want.
-    // By reattaching it after the underlying query but before resolving
-    // the promise we can similuate immutability. It's threadsafe because JS.
-    if (query.commandArg._id) {
-      restoreId = query.commandArg._id
-      delete query.commandArg._id
-      query.query._id = restoreId
-    }
-    var op = Q.ninvoke(collection, 'update', query.query, query.commandArg, query.options)
+  if (restoreId) {
+    op = op.then(function (val) {
+      query.commandArg._id = restoreId
+      return val
+    }, function (err) {
+      query.commandArg._id = restoreId
+      throw err
+    })
+  }
 
-    if (restoreId) {
-      op = op.then(function (val) {
-        query.commandArg._id = restoreId
-        return val
-      }, function (err) {
-        query.commandArg._id = restoreId
-        throw err
-      })
-    }
-
-    return op
-  })
+  return op
 }
 
 // returns the document BEFORE the changes object has been applied
-proto._findAndModify = function (query) {
+proto._findAndModify = function (collection, query) {
   query.options.sort = query.options.sort || {_id: 1}
   query.options.new = false
   query.options.upsert = false
-  return this._collection(query).then(function (collection) {
-    return Q.ninvoke(collection, 'findAndModify', query.query, query.options.sort, query.commandArg, query.options)
-  })
+
+  return Q.ninvoke(collection, 'findAndModify',
+    query.query, query.options.sort, query.commandArg, query.options)
 }
 
 // returns the document AFTER the changes object has been applied
-proto._modifyAndFind = function (query) {
+proto._modifyAndFind = function (collection, query) {
   query.options.sort = query.options.sort || {_id: 1}
   query.options.new = true
   query.options.upsert = false
-  return this._collection(query).then(function (collection) {
-    return Q.ninvoke(collection, 'findAndModify', query.query, query.options.sort, query.commandArg, query.options)
-  })
+
+  return Q.ninvoke(collection, 'findAndModify',
+    query.query, query.options.sort, query.commandArg, query.options)
 }
 
-proto._pull = function (query) {
-  return this._collection(query).then(function (collection) {
-    return Q.ninvoke(collection, 'findAndRemove', query.query, query.options.sort, query.options)
-  })
+proto._pull = function (collection, query) {
+  return Q.ninvoke(collection, 'findAndRemove',
+    query.query, query.options.sort, query.options)
 }
 
-proto._upsert = function  (query) {
+proto._upsert = function  (collection, query) {
   query.query = query.query || {}
   query.options.upsert = true
-  return this._collection(query).then(function (collection) {
-    return Q.ninvoke(collection, 'update', query.query, query.commandArg, query.options)
-  })
+  return Q.ninvoke(collection, 'update',
+    query.query, query.commandArg, query.options)
 }
 
-proto._remove = function (query) {
+proto._remove = function (collection, query) {
   if (!query.query || !Object.keys(query.query).length) {
-    return new Q.reject(new Error('No `where` query specified. Use `removeAll` to remove all documents in a collection.'))
+    return new Q.reject(
+      new Error('No `where` query specified. ' +
+        'Use `removeAll` to remove all documents in a collection.'))
   }
-  return this._collection(query).then(function (collection) {
-    return Q.ninvoke(collection, 'remove', query.query, query.options)
-  })
+
+  return Q.ninvoke(collection, 'remove', query.query, query.options)
 }
 
-proto._removeAll = function (query) {
-  return this._collection(query).then(function (collection) {
-    return Q.ninvoke(collection, 'remove', query.options)
-  })
+proto._removeAll = function (collection, query) {
+  return Q.ninvoke(collection, 'remove', query.options)
 }
