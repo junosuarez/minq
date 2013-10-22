@@ -36,7 +36,15 @@ method.where = function (clause) {
   this._.query = util.extend(this._.query, clause)
   return this
 }
-method.select = function select(projection) {
+
+method.not = function (key) {
+  var obj = {}
+  obj[key] = {$in: [false, null, undefined]}
+  this.where(obj)
+  return this
+}
+
+method.select = function (projection) {
   // accept arrays of field names to include (dot-notation ok)
   if (Array.isArray(projection)) {
     this._.projection = projection.reduce(function (projection, field) {

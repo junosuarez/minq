@@ -63,6 +63,14 @@ describe('Query', function () {
     })
   })
 
+  describe('#not', function () {
+    it('checks a keypath for falsy-ness', function () {
+      var q = new Query
+      q.not('_archived')
+      q._.query.should.deep.equal({'_archived': {$in: [false, null, undefined]}})
+    })
+  })
+
   describe('#select', function () {
     it('sets _.projection', function () {
       var q = new Query
