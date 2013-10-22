@@ -534,15 +534,84 @@ describe('MongoDb', function () {
     })
   })
   describe('#_remove', function () {
-    it('exists', function () {
+    it('calls underlying remove', function (done) {
+
+      var remove = function (query, options, callback) {
+        remove.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({remove:remove}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {a: 'foo'}
+      q.command = 'upsert'
+      q.commandArg = {foo: 'baz'}
+      q.options = { }
       var mdb = new MongoDb()
-      mdb._remove()
+      mdb._collection = collection
+
+      mdb._remove(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        remove.args[0].should.equal(q.query)
+        remove.args[1].should.equal(q.options)
+      })
+      .then(done, done)
+    })
+    it('is rejected if no query specified', function (done) {
+
+      var remove = function (query, options, callback) {
+        remove.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({remove:remove}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {}
+      q.command = 'remove'
+      q.commandArg = {foo: 'baz'}
+      q.options = { }
+      var mdb = new MongoDb()
+      mdb._collection = collection
+
+      mdb._remove(q).then(function () {
+        throw new Error('should not be fulfilled')
+      }, function (err) {
+        err.should.match(/query/)
+      })
+      .then(done, done)
     })
   })
   describe('#_removeAll', function () {
-    it('exists', function () {
+    it('calls underlying remove', function (done) {
+
+      var remove = function (options, callback) {
+        remove.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({remove:remove}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.command = 'removeAll'
+      q.commandArg = {foo: 'baz'}
+      q.options = { }
       var mdb = new MongoDb()
-      mdb._removeAll()
+      mdb._collection = collection
+
+      mdb._removeAll(q).then(function (val) {
+        collection.should.have.been.calledWithExactly(q)
+        remove.args[0].should.equal(q.options)
+      })
+      .then(done, done)
     })
   })
 

@@ -184,3 +184,18 @@ proto._upsert = function  (query) {
     return Q.ninvoke(collection, 'update', query.query, query.commandArg, query.options)
   })
 }
+
+proto._remove = function (query) {
+  if (!query.query || !Object.keys(query.query).length) {
+    return new Q.reject(new Error('No `where` query specified. Use `removeAll` to remove all documents in a collection.'))
+  }
+  return this._collection(query).then(function (collection) {
+    return Q.ninvoke(collection, 'remove', query.query, query.options)
+  })
+}
+
+proto._removeAll = function (query) {
+  return this._collection(query).then(function (collection) {
+    return Q.ninvoke(collection, 'remove', query.options)
+  })
+}
