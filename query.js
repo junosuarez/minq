@@ -6,6 +6,7 @@ var Query = module.exports = function Query(db){
   this._ = {
     db: db,
     collection: null,
+    command: 'read',
     query: {},
     projection: null,
     options: {
@@ -69,14 +70,7 @@ method.first = function () {
   this.limit(1)
   return this
 }
-method.count = function () {
-  this._.command = 'count'
-  return this
-}
-method.exists = function () {
-  this._.command = 'exists'
-  return this
-}
+
 method.byId = function (id) {
   return this
     .where({_id: id})
@@ -91,38 +85,67 @@ method.byIds = function (ids) {
     .limit(ids.length)
 }
 
+method.count = command('count')
+method.exists = command('exists')
+
 // finalizers
-method.assert = function (assertion) {
-  this._.post = assertion
+method.assert = function (assertion, message) {
+  if (message) {
+    assertion.message = message
+  }
+  this._.assertion = assertion
   return this
+}
+
+var _checkAssertion = function (assertion) {
+  if (!assertion) { return function (x) { return x }}
+  return function (val) {
+    if (!assertion(val)) {
+      throw new Error('Assertion failure: ' + assertion.message || assertion.name || assertion)
+    }
+    return val
+  }
 }
 
 // forcers
 // fetch result set as promise
 method.then = function (fulfill, reject) {
   // TODO: guard for db
-  return this._.db.run(this).then(fulfill, reject)
+
+  return this._.db.run(this)
+    .then(_checkAssertion(this._.assertion))
+    .then(fulfill, reject)
 }
 // fetch result set as stream
 method.pipe = function (sink) {
   // TODO: guard for db
+  this._.command = 'read'
   return this._.db.runAsStream(this).pipe(sink)
 }
 // do charybdis magic
 method.forEach = function (iterator) {
   // TODO: guard for db, iterator is fn
+  this._.command = 'read'
   return this._.db.runAsStream(this).pipe(charybdis(iterator))
 }
 
 // mutators
-method.insert
-method.update
-method.findAndModify
-method.modifyAndFind
-method.pull
-method.upsert
-method.remove
-method.removeAll
-method.drop
+method.insert = command('insert')
+method.update = command('update')
+method.findAndModify = command('findAndModify')
+method.modifyAndFind = command('modifyAndFind')
+method.pull = command('pull')
+method.upsert = command('upsert')
+method.remove = command('remove')
+method.removeAll = command('removeAll')
 
 
+function command(name) {
+  var fn = function (arg) {
+    this._.command = name
+    this._.commandArg = arg
+    return this
+  }
+  fn.name = name
+  return fn
+}

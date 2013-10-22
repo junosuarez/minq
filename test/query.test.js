@@ -31,7 +31,7 @@ describe('Query', function () {
       var q2 = q.clone()
 
       q.should.not.equal(q2)
-      q._.should.deep.equal(q2._)  
+      q._.should.deep.equal(q2._)
     })
   })
 
@@ -138,7 +138,6 @@ describe('Query', function () {
   describe('#count', function () {
     it('sets _.command to "count"', function () {
       var q = new Query
-      expect(q._.command).to.equal(undefined)
       q.count()
         .should.equal(q)
       q._.command.should.equal('count')
@@ -148,7 +147,6 @@ describe('Query', function () {
   describe('#exists', function () {
     it('sets _.command to "exists"', function () {
       var q = new Query
-      expect(q._.command).to.equal(undefined)
       q.exists()
         .should.equal(q)
       q._.command.should.equal('exists')
@@ -185,18 +183,6 @@ describe('Query', function () {
       q.byIds(94)
       q.error.should.be.instanceof(TypeError)
       q.error.message.should.match(/Array/)
-    })
-  })
-
-  describe('#assert', function () {
-    it('checks post-conditions and errors if assert fails', function () {
-      var q = new Query
-      var assertion = function (results) {
-        return true
-      }
-      q.assert(assertion)
-      q._.post.should.equal(assertion)
-
     })
   })
 
@@ -247,5 +233,112 @@ describe('Query', function () {
     })
   })
 
+  describe('#assert', function () {
+
+    it('checks post-conditions and errors if assert fails', function () {
+      var q = new Query
+      var assertion = function (results) {
+        return true
+      }
+      q.assert(assertion)
+      q._.assertion.should.equal(assertion)
+
+    })
+
+    it('takes a predicate function, eg', function (done) {
+      var db = new StubDb()
+      var stubResults = []
+      db.run.returns(Q(stubResults))
+
+      var predicate = sinon.stub().returns(true)
+
+      var q = new Query(db)
+       q.from('bears')
+        .assert(predicate)
+        .then(function () {
+          predicate.should.have.been.calledOnce
+          predicate.should.have.been.calledWithExactly(stubResults)
+        })
+        .then(done, done)
+    })
+    it('fulfills the value if the predicate is true', function (done) {
+      var predicate = sinon.stub().returns(true)
+      var db = new StubDb()
+      var stubResults = []
+      db.run.returns(Q(stubResults))
+
+
+      var q = new Query(db)
+       q.from('bears')
+        .where({polar:true})
+        .assert(predicate)
+        .then(function (value) {
+          predicate.should.have.been.calledOnce
+
+        })
+        .then(done, done)
+    })
+    it('rejects if the predicate is false', function (done) {
+      var predicate = sinon.stub().returns(false)
+      var db = new StubDb()
+      var stubResults = []
+      db.run.returns(Q(stubResults))
+
+      var q = new Query(db)
+       q.from('bears')
+        .assert(predicate)
+        .then(function () {
+          throw new Error('should not be fulfilled')
+        }, function (reason) {
+          predicate.should.have.been.calledOnce
+          reason.should.be.instanceof(Error)
+          reason.message.should.match(/Assertion failure:/)
+        })
+        .then(done, done)
+    })
+    it('takes failure message as second arg', function (done) {
+      var predicate = sinon.stub().returns(false)
+      var db = new StubDb()
+      var stubResults = []
+      db.run.returns(Q(stubResults))
+
+      var q = new Query(db)
+       q.from('bears')
+        .assert(predicate, 'failure message')
+        .then(function () {
+          throw new Error('should not be fulfilled')
+        }, function (reason) {
+          reason.message.should.match(/failure message/)
+        })
+        .then(done, done)
+    })
+
+  })
+
+
+  describe('mutators', function () {
+
+    ['insert', 'update', 'findAndModify', 'modifyAndFind', 'pull',
+    'upsert', 'remove', 'removeAll', 'count', 'exists'].forEach(function (command) {
+
+      it('runs ' + command + ' command', function (done) {
+
+        var db = new StubDb()
+        var q = new Query(db)
+        var out = {}
+        db.run.returns(Q(out))
+        var val = {}
+        q[command](val)
+          .then(function (result) {
+            q._.command.should.equal(command)
+            q._.commandArg.should.equal(val)
+            db.run.should.have.been.calledWithExactly(q)
+            result.should.equal(out)
+          })
+          .then(done, done)
+      })
+
+    })
+  })
 
 })
