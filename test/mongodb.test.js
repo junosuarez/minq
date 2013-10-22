@@ -332,7 +332,6 @@ describe('MongoDb', function () {
     it('converts included ._id property to where clause', function (done) {
 
       var update = function (query, val, options, callback) {
-        console.log(val)
         update.args = arguments
         update.args[0] = JSON.parse(JSON.stringify(update.args[0]))
         update.args[1] = JSON.parse(JSON.stringify(update.args[1]))
@@ -363,27 +362,175 @@ describe('MongoDb', function () {
     })
   })
   describe('#_findAndModify', function () {
-    it('exists', function () {
+    it('calls underlying findAndModify', function (done) {
+
+      var findAndModify = function (query, sort, changes, options, callback) {
+        findAndModify.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({findAndModify:findAndModify}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {foo: 'bar'}
+      q.command = 'findAndModify'
+      q.commandArg = {$set: {foo: 'baz'}}
+      q.options = {
+        sort: {}
+      }
       var mdb = new MongoDb()
-      mdb._findAndModify()
+      mdb._collection = collection
+
+      mdb._findAndModify(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        findAndModify.args.should.not.equal(null)
+        findAndModify.args[0].should.equal(q.query)
+        findAndModify.args[1].should.equal(q.options.sort)
+        findAndModify.args[2].should.equal(q.commandArg)
+        findAndModify.args[3].should.equal(q.options)
+        var options = findAndModify.args[3]
+        options.new.should.equal(false)
+        options.upsert.should.equal(false)
+      })
+      .then(done, done)
+
+    })
+    it('specifies a default sort order', function (done) {
+
+      var findAndModify = function (query, sort, changes, options, callback) {
+        findAndModify.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({findAndModify:findAndModify}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {foo: 'bar'}
+      q.command = 'findAndModify'
+      q.commandArg = {$set: {foo: 'baz'}}
+      q.options = {}
+      var mdb = new MongoDb()
+      mdb._collection = collection
+
+      mdb._findAndModify(q).then(function (val) {
+        findAndModify.args[1].should.deep.equal({_id: 1}) // sort
+      })
+      .then(done, done)
+
     })
   })
   describe('#_modifyAndFind', function () {
-    it('exists', function () {
+    it('calls underlying findAndModify', function (done) {
+
+      var findAndModify = function (query, sort, changes, options, callback) {
+        findAndModify.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({findAndModify:findAndModify}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {foo: 'bar'}
+      q.command = 'modifyAndFind'
+      q.commandArg = {$set: {foo: 'baz'}}
+      q.options = {
+        sort: {}
+      }
       var mdb = new MongoDb()
-      mdb._modifyAndFind()
+      mdb._collection = collection
+
+      mdb._modifyAndFind(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        findAndModify.args.should.not.equal(null)
+        findAndModify.args[0].should.equal(q.query)
+        findAndModify.args[1].should.equal(q.options.sort)
+        findAndModify.args[2].should.equal(q.commandArg)
+        findAndModify.args[3].should.equal(q.options)
+        var options = findAndModify.args[3]
+        // the secret sauce! :
+        options.new.should.equal(true)
+        options.upsert.should.equal(false)
+      })
+      .then(done, done)
+
     })
   })
   describe('#_pull', function () {
-    it('exists', function () {
+    it('calls underlying findAndRemove', function (done) {
+
+      var findAndRemove = function (query, sort, options, callback) {
+        findAndRemove.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({findAndRemove:findAndRemove}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {foo: 'bar'}
+      q.command = 'pull'
+      q.commandArg = {$set: {foo: 'baz'}}
+      q.options = {
+        sort: {}
+      }
       var mdb = new MongoDb()
-      mdb._pull()
+      mdb._collection = collection
+
+      mdb._pull(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        findAndRemove.args.should.not.equal(null)
+        findAndRemove.args[0].should.equal(q.query)
+        findAndRemove.args[1].should.equal(q.options.sort)
+        findAndRemove.args[2].should.equal(q.options)
+
+      })
+      .then(done, done)
+
     })
   })
   describe('#_upsert', function () {
-    it('exists', function () {
+    it('calls underlying update', function (done) {
+
+      var update = function (query, val, options, callback) {
+        update.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = sinon.stub().returns(Q({update:update}))
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.command = 'upsert'
+      q.commandArg = {foo: 'baz'}
+      q.options = { }
       var mdb = new MongoDb()
-      mdb._upsert()
+      mdb._collection = collection
+
+      mdb._upsert(q).then(function (val) {
+
+        collection.should.have.been.calledWithExactly(q)
+        update.args.should.not.equal(null)
+        // default query
+        update.args[0].should.deep.equal({})
+        update.args[1].should.equal(q.commandArg)
+        update.args[2].should.equal(q.options)
+        var options = update.args[2]
+        options.upsert.should.equal(true)
+
+      })
+      .then(done, done)
+
     })
   })
   describe('#_remove', function () {

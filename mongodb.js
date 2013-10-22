@@ -118,6 +118,7 @@ proto._insert = function (query) {
   })
 }
 
+// (Query) => Promise
 proto._update = function (query) {
   return this._collection(query).then(function (collection){
 
@@ -147,5 +148,39 @@ proto._update = function (query) {
     }
 
     return op
+  })
+}
+
+// returns the document BEFORE the changes object has been applied
+proto._findAndModify = function (query) {
+  query.options.sort = query.options.sort || {_id: 1}
+  query.options.new = false
+  query.options.upsert = false
+  return this._collection(query).then(function (collection) {
+    return Q.ninvoke(collection, 'findAndModify', query.query, query.options.sort, query.commandArg, query.options)
+  })
+}
+
+// returns the document AFTER the changes object has been applied
+proto._modifyAndFind = function (query) {
+  query.options.sort = query.options.sort || {_id: 1}
+  query.options.new = true
+  query.options.upsert = false
+  return this._collection(query).then(function (collection) {
+    return Q.ninvoke(collection, 'findAndModify', query.query, query.options.sort, query.commandArg, query.options)
+  })
+}
+
+proto._pull = function (query) {
+  return this._collection(query).then(function (collection) {
+    return Q.ninvoke(collection, 'findAndRemove', query.query, query.options.sort, query.options)
+  })
+}
+
+proto._upsert = function  (query) {
+  query.query = query.query || {}
+  query.options.upsert = true
+  return this._collection(query).then(function (collection) {
+    return Q.ninvoke(collection, 'update', query.query, query.commandArg, query.options)
   })
 }

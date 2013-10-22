@@ -214,7 +214,12 @@ describe('Query', function () {
       var q = new Query(db)
       var ws = new stream.Writable
       q.pipe(ws)
-      db.runAsStream.should.have.been.calledWith(q._)
+      try {
+        db.runAsStream.should.have.been.calledWith(q._)
+      } finally {
+        // cleanup
+        process.stdin.unpipe(ws)
+      }
     })
   })
 
