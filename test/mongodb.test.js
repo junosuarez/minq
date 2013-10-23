@@ -8,6 +8,7 @@ var StubDb = require('./stubDb')
 var Q = require('q')
 Q.longStackSupport = true
 var stream = require('stream')
+var moquire = require('moquire')
 
 describe('MongoDb', function () {
   var MongoDb = require('../mongodb')
@@ -26,8 +27,98 @@ describe('MongoDb', function () {
       var mdb = new MongoDb()
       mdb.should.have.interface({
         run: Function,
-        runAsStream: Function
+        runAsStream: Function,
+        then: Function,
+        ready: Object
       })
+    })
+    it('#then should invoke #ready.then', function () {
+      // heh, some round-about whitebox testing here:
+      var ready = {
+        then: sinon.spy()
+      }
+      var MongoDb = moquire('../mongodb', {
+        q: function () {
+          return {then: function () { return ready }}
+        }
+      })
+
+      var provider = new MongoDb()
+      var onFulfilled = function () {}
+      var onRejected = function () {}
+      provider.then(onFulfilled, onRejected)
+      ready.then.should.have.been.called
+      ready.then.should.have.been.calledOn(provider.ready)
+      ready.then.should.have.been.calledWithExactly(onFulfilled, onRejected)
+    })
+  })
+
+
+  describe('.connect', function () {
+    it('creates a new MongoClient and creates a new mongodb provider', function (done) {
+      var db = {}
+      var mongoClientConnect = function (cs, options, callback) {
+        mongoClientConnect.args = arguments
+        process.nextTick(function () {
+          callback(null, db)
+        })
+      }
+      var MongoDb = moquire('../mongodb', {
+        mongodb: {
+          MongoClient: {
+            connect: mongoClientConnect
+          }
+        }
+      })
+
+      function FakeProvider() {}
+      FakeProvider.prototype = MongoDb.prototype
+      FakeProvider.connect = MongoDb.connect
+
+      var provider = FakeProvider.connect('mongodb://local')
+      provider.should.be.instanceof(FakeProvider)
+      provider.ready.then(function () {
+        mongoClientConnect.args[0].should.equal('mongodb://local')
+        expect(mongoClientConnect.args[1]).to.equal(undefined)
+        provider._db.should.equal(db)
+      })
+      .then(done, done)
+
+    })
+  })
+
+  describe('#getCollectionNames', function () {
+    it('calls underlying collectionNames', function (done) {
+      var MongoDb = moquire('../mongodb')
+      var db = {
+        collectionNames: function (callback) {
+          db.collectionNames.called = true
+          process.nextTick(function () {
+            callback(null, [])
+          })
+        }
+      }
+      var mongodb = new MongoDb(db)
+      mongodb.getCollectionNames().then(function (collectionNames) {
+        db.collectionNames.called.should.equal(true)
+      })
+      .then(done, done)
+    })
+    it('removes db namespacing from underlying response', function (done) {
+      var MongoDb = moquire('../mongodb')
+      var db = {
+        collectionNames: function (callback) {
+          process.nextTick(function () {
+            // the mongodb driver sends back funny shaped objects:
+            callback(null, [{name:'db.a'},{name:'db.b'},{name:'db.c'}])
+          })
+        }
+      }
+      var mongodb = new MongoDb(db)
+      mongodb.getCollectionNames().then(function (collectionNames) {
+        collectionNames.should.deep.equal(['a','b','c'])
+      })
+      .then(done, done)
     })
   })
 
@@ -43,6 +134,7 @@ describe('MongoDb', function () {
       mdb._collection = sinon.stub().returns(Q(collection))
       var result = mdb.run(q)
       result.then(function (val) {
+        mdb._collection.should.have.been.calledWithExactly(q)
         mdb['_'+command].should.have.been.calledOnce
         mdb['_'+command].should.have.been.calledWithExactly(collection, q)
         val.should.equal('result')

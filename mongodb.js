@@ -1,17 +1,37 @@
 var Q = require('q')
 var stream = require('stream')
 var through = require('through')
+var mongodb = require('mongodb')
 
 var MongoDb = module.exports = function MongoDb(db) {
   var self = this
   this.db = Q(db)
   this.ready = this.db.then(function (db) {
     self._db = db
-    return true
+    return self
   })
+  //this.then = this.ready.then.bind(this.ready)
+}
+
+MongoDb.connect = function (connectionString, options) {
+  // create new MongoDbProvider from new MongoClient
+  var db = Q.nfcall(mongodb.MongoClient.connect,
+    connectionString, options)
+  return new MongoDb(db)
 }
 
 var proto = MongoDb.prototype
+
+
+proto.getCollectionNames = function () {
+  return this.db.then(function (db) {
+    return Q.ninvoke(db, 'collectionNames').then(function (names) {
+      return names.map(function (name) {
+        return name.name.replace(/^\w*\./, '')
+      })
+    })
+  })
+}
 
 // (Query) => Promise
 proto.run = function (query) {
@@ -29,7 +49,7 @@ proto.run = function (query) {
     case 'upsert':
     case 'remove':
     case 'removeAll':
-      return self._collection().then(function (collection) {
+      return self._collection(query).then(function (collection) {
         return self['_' + query.command](collection, query)
       })
     default:
@@ -73,8 +93,8 @@ proto.runAsStream = function (query) {
 }
 
 // (Query) => Promise
-proto._read = function (query) {
-  return this._find(query).then(function (cursor) {
+proto._read = function (collection, query) {
+  return this._find(collection, query).then(function (cursor) {
     var results = Q.ninvoke(cursor, 'toArray')
 
     // handle expected scalar return value
