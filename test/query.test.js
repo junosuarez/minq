@@ -330,10 +330,10 @@ describe('Query', function () {
   })
 
 
-  describe('mutators', function () {
+  describe('commands', function () {
 
     ['insert', 'update', 'findAndModify', 'modifyAndFind', 'pull',
-    'upsert', 'remove', 'removeAll', 'count', 'exists'].forEach(function (command) {
+    'upsert', 'remove', 'removeAll', 'count', 'exists', 'aggregate'].forEach(function (command) {
 
       it('runs ' + command + ' command', function (done) {
 

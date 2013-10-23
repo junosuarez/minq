@@ -123,11 +123,12 @@ describe('MongoDb', function () {
 
   describe('#run', function () {
     ['read','count','exists','insert', 'update', 'findAndModify', 'modifyAndFind', 'pull',
-    'upsert', 'remove', 'removeAll'].forEach(function (command) {
+    'upsert', 'remove', 'removeAll', 'aggregate'].forEach(function (command) {
     it('dispatches to ' + command + 'command', function (done) {
       var q = StubQuery()
       q.command = command
       var mdb = new MongoDb
+      mdb.should.have.property('_'+command)
       mdb['_'+command] = sinon.stub().returns(Q('result'))
       var collection = {}
       mdb._collection = sinon.stub().returns(Q(collection))
@@ -367,6 +368,55 @@ describe('MongoDb', function () {
 
     })
   })
+
+  describe('#_aggregate', function () {
+    it('calls underlying aggregate', function (done) {
+      var aggregate = function (array, options, callback) {
+        aggregate.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = {aggregate:aggregate}
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.command = 'aggregate'
+      q.commandArg = []
+      q.options = {}
+      var mdb = new MongoDb()
+
+      mdb._aggregate(collection, q).then(function (val) {
+        aggregate.args[0].should.equal(q.commandArg)
+        aggregate.args[1].should.equal(q.options)
+      })
+      .then(done, done)
+    })
+    it('rejects if commandArg is not an array', function (done) {
+      var aggregate = function (array, options, callback) {
+        aggregate.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = {aggregate:aggregate}
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.command = 'aggregate'
+      q.commandArg = {not:Array}
+      q.options = {}
+      var mdb = new MongoDb()
+
+      mdb._aggregate(collection, q).then(function () {
+        throw new Error('should not be resolved')
+      }, function (err) {
+        err.should.match(/array/)
+      })
+      .then(done, done)
+    })
+  })
+
   describe('#_insert', function () {
     it('calls underlying insert', function (done) {
 

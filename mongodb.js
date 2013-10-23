@@ -54,6 +54,7 @@ proto.run = function (query) {
     case 'upsert':
     case 'remove':
     case 'removeAll':
+    case 'aggregate':
       return self._collection(query).then(function (collection) {
         return self['_' + query.command](collection, query)
       })
@@ -134,6 +135,14 @@ proto._exists = function (collection, query) {
   return this._count(query.query).then(function (count) {
     return count > 0
   })
+}
+
+// (Query) => Promise
+proto._aggregate = function (collection, query) {
+  if (!Array.isArray(query.commandArg)) {
+    return Q.reject(new TypeError('Argument must be an array'))
+  }
+  return Q.ninvoke(collection, 'aggregate', query.commandArg, query.options)
 }
 
 // (Query) => Promise

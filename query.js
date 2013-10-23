@@ -95,6 +95,7 @@ proto.byIds = function (ids) {
 
 proto.count = command('count')
 proto.exists = command('exists')
+proto.aggregate = command('aggregate')
 
 // finalizers
 proto.assert = function (assertion, message) {
