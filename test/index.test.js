@@ -27,7 +27,6 @@ describe('Minq', function () {
     it('#ready should be fulfilled with self', function (done) {
       var minq = new Minq({ready:1})
       minq.ready.then(function (self) {
-        // TODO: iron this over
         self.should.equal(minq)
       })
       .then(done, done)
