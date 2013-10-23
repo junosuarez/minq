@@ -5,11 +5,9 @@ var Minq = module.exports = function Minq (provider) {
   var self = this
   this.provider = Q(provider)
   this.ready = this.provider.then(function (provider) {
-    console.log('rdy', provider, self)
     self._provider = provider
-    return chop(self)
+    return self
   })
-  this.then = this.ready.then.bind(this.ready)
 
 }
 
@@ -26,7 +24,7 @@ function chop(x) {
 
 Minq.connect = function (connectionString, options) {
   var minq = new Minq(defaultProvider.connect(connectionString, options))
-  return minq
+  return minq.ready
 }
 
 var proto = Minq.prototype

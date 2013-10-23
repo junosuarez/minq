@@ -10,7 +10,6 @@ var MongoDb = module.exports = function MongoDb(db) {
     self._db = db
     return self
   })
-  //this.then = this.ready.then.bind(this.ready)
 }
 
 MongoDb.connect = function (connectionString, options) {

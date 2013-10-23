@@ -28,28 +28,9 @@ describe('MongoDb', function () {
       mdb.should.have.interface({
         run: Function,
         runAsStream: Function,
-        then: Function,
         ready: Object
       })
-    })
-    it('#then should invoke #ready.then', function () {
-      // heh, some round-about whitebox testing here:
-      var ready = {
-        then: sinon.spy()
-      }
-      var MongoDb = moquire('../mongodb', {
-        q: function () {
-          return {then: function () { return ready }}
-        }
-      })
-
-      var provider = new MongoDb()
-      var onFulfilled = function () {}
-      var onRejected = function () {}
-      provider.then(onFulfilled, onRejected)
-      ready.then.should.have.been.called
-      ready.then.should.have.been.calledOn(provider.ready)
-      ready.then.should.have.been.calledWithExactly(onFulfilled, onRejected)
+      Q.isPromise(mdb.ready).should.equal(true)
     })
   })
 
@@ -265,9 +246,11 @@ describe('MongoDb', function () {
           })
         }
       }
+      var collection = {}
       mdb._find = sinon.stub().returns(Q(cursor))
 
-      mdb._read(q).then(function (results) {
+      mdb._read(collection, q).then(function (results) {
+        mdb._find.should.have.been.calledWithExactly(collection, q)
         results.should.deep.equal(['result', 'set'])
       })
       .then(done, done)
@@ -284,7 +267,7 @@ describe('MongoDb', function () {
         }
       }
       mdb._find = sinon.stub().returns(Q(cursor))
-      mdb._read(q).then(function (results) {
+      mdb._read({}, q).then(function (results) {
         Array.isArray(results).should.equal(false)
         results.should.equal('result')
       })

@@ -17,37 +17,18 @@ describe('Minq', function () {
     it('has interface', function () {
       var minq = new Minq()
       minq.should.have.interface({
-        then: Function,
         ready: Object
       })
 
       Q.isPromise(minq.ready).should.equal(true)
 
     })
-    it('minq.then should invoke minq.ready.then', function () {
-      // heh, some round-about whitebox testing here:
-      var ready = {
-        then: sinon.spy()
-      }
-      var Minq = moquire('../index', {
-        q: function () {
-          return {then: function () { return ready }}
-        }
-      })
 
-      var minq = new Minq()
-      var onFulfilled = function () {}
-      var onRejected = function () {}
-      minq.then(onFulfilled, onRejected)
-      ready.then.should.have.been.called
-      ready.then.should.have.been.calledOn(minq.ready)
-      ready.then.should.have.been.calledWithExactly(onFulfilled, onRejected)
-    })
     it('#ready should be fulfilled with self', function (done) {
       var minq = new Minq({ready:1})
       minq.ready.then(function (self) {
         // TODO: iron this over
-        self.it.should.equal(minq)
+        self.should.equal(minq)
       })
       .then(done, done)
 
@@ -55,7 +36,7 @@ describe('Minq', function () {
   })
 
   describe('.connect', function () {
-    it('calls connect on default provider and returns instanceof Minq', function (done) {
+    it('calls connect on default provider and returns Minq#ready', function (done) {
       var defaultProvider = {
         connect: sinon.stub().returns(Q())
       }
@@ -65,8 +46,9 @@ describe('Minq', function () {
 
       var minq = Minq.connect('mongodb://foo')
 
-      minq.should.be.instanceof(Minq)
-      minq.then(function () {
+      Q.isPromise(minq).should.equal(true)
+      minq.then(function (minq) {
+        minq.should.be.instanceof(Minq)
         defaultProvider.connect.should.have.been.called
       })
       .then(done, done)
