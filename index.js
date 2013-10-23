@@ -9,7 +9,7 @@ var Minq = module.exports = function Minq (provider) {
   var self = this
   this.provider = provider
   this.ready = Q(this.provider.ready)
-    .then(this.initialize)
+    .then(this._initialize)
     .then(function (provider) {
       return self
     })
@@ -27,7 +27,7 @@ proto.disconnect = function () {
   return this.provider.disconnect && Q(this.provider.disconnect()) || Q()
 }
 
-proto.initialize = function () {
+proto._initialize = function () {
   var self = this
   return this.provider.getCollectionNames().then(function (names) {
     names.forEach(function (name) {

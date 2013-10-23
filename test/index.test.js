@@ -32,7 +32,7 @@ describe('Minq', function () {
 
     it('#ready should be fulfilled with self', function (done) {
       var Minq = moquire('../index')
-      Minq.prototype.initialize = sinon.stub().returns(Q())
+      Minq.prototype._initialize = sinon.stub().returns(Q())
 
       var minq = new Minq({ready:1})
       minq.ready.then(function (self) {
@@ -47,11 +47,11 @@ describe('Minq', function () {
         ready: Q()
       }
       var Minq = moquire('../index')
-      Minq.prototype.initialize = sinon.stub().returns(Q())
+      Minq.prototype._initialize = sinon.stub().returns(Q())
 
       var minq = new Minq(provider)
       minq.ready.then(function () {
-        minq.initialize.should.have.been.called
+        minq._initialize.should.have.been.called
       })
       .then(done, done)
     })
@@ -65,7 +65,7 @@ describe('Minq', function () {
       var Minq = moquire('../index', {
         './mongodb': defaultProvider
         })
-      Minq.prototype.initialize = sinon.stub().returns(Q())
+      Minq.prototype._initialize = sinon.stub().returns(Q())
 
       var minq = Minq.connect('mongodb://foo')
 
@@ -78,7 +78,7 @@ describe('Minq', function () {
     })
   })
 
-  describe('#initialize', function () {
+  describe('#_initialize', function () {
     it('creates convenience accessors for collections', function (done) {
       var provider = {
         getCollectionNames: sinon.stub().returns(Q(['foo','baz']))
@@ -88,7 +88,7 @@ describe('Minq', function () {
         provider: provider,
         from: sinon.stub().returns(query)
       }
-      Minq.prototype.initialize.call(minq).then(function () {
+      Minq.prototype._initialize.call(minq).then(function () {
         provider.getCollectionNames.should.have.been.called
         expect('foo' in minq).to.equal(true)
         expect('baz' in minq).to.equal(true)
