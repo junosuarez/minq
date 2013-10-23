@@ -1,30 +1,48 @@
 var Q = require('q')
-var defaultProvider = require('./mongodb')
+var DefaultProvider = require('./mongodb')
+var Query = require('./query')
 
 var Minq = module.exports = function Minq (provider) {
-  var self = this
-  this.provider = Q(provider)
-  this.ready = this.provider.then(function (provider) {
-    self._provider = provider
-    return self
-  })
-
-}
-
-function chop(x) {
-  var y = Object.create(Minq.prototype)
-  for (prop in x) {
-    if (prop !== 'then') {
-      y[prop] = x[prop]
-    }
+  if (typeof provider !== 'object') {
+    throw new TypeError('Missing required parameter: provider')
   }
-  y.it = x
-  return y
+  var self = this
+  this.provider = provider
+  this.ready = Q(this.provider.ready)
+    .then(this.initialize)
+    .then(function (provider) {
+      return self
+    })
+
 }
 
 Minq.connect = function (connectionString, options) {
-  var minq = new Minq(defaultProvider.connect(connectionString, options))
+  var minq = new Minq(DefaultProvider.connect(connectionString, options))
   return minq.ready
 }
 
 var proto = Minq.prototype
+
+proto.disconnect = function () {
+  return this.provider.disconnect && Q(this.provider.disconnect()) || Q()
+}
+
+proto.initialize = function () {
+  var self = this
+  return this.provider.getCollectionNames().then(function (names) {
+    names.forEach(function (name) {
+      Object.defineProperty(self, name, {
+        enumerable: true,
+        get: function () {
+          return self.from(name)
+        }
+      })
+    })
+  })
+}
+
+proto.from = function (collection) {
+  var query = new Query(this.provider)
+  query.from(collection)
+  return query
+}

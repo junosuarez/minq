@@ -32,6 +32,7 @@ describe('Query', function () {
 
       q.should.not.equal(q2)
       q._.should.deep.equal(q2._)
+      q2.should.be.instanceof(Query)
     })
   })
 

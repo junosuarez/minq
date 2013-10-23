@@ -15,7 +15,7 @@ describe('Minq', function () {
 
   describe('[[constructor]]', function () {
     it('has interface', function () {
-      var minq = new Minq()
+      var minq = new Minq({})
       minq.should.have.interface({
         ready: Object
       })
@@ -24,13 +24,36 @@ describe('Minq', function () {
 
     })
 
+    it('requires provider parameter', function () {
+      expect(function () {
+        var minq = new Minq()
+      }).to.throw(/required/)
+    })
+
     it('#ready should be fulfilled with self', function (done) {
+      var Minq = moquire('../index')
+      Minq.prototype.initialize = sinon.stub().returns(Q())
+
       var minq = new Minq({ready:1})
       minq.ready.then(function (self) {
         self.should.equal(minq)
       })
       .then(done, done)
 
+    })
+
+    it('calls #initialize when provider is ready', function (done) {
+      var provider = {
+        ready: Q()
+      }
+      var Minq = moquire('../index')
+      Minq.prototype.initialize = sinon.stub().returns(Q())
+
+      var minq = new Minq(provider)
+      minq.ready.then(function () {
+        minq.initialize.should.have.been.called
+      })
+      .then(done, done)
     })
   })
 
@@ -42,6 +65,7 @@ describe('Minq', function () {
       var Minq = moquire('../index', {
         './mongodb': defaultProvider
         })
+      Minq.prototype.initialize = sinon.stub().returns(Q())
 
       var minq = Minq.connect('mongodb://foo')
 
@@ -51,6 +75,68 @@ describe('Minq', function () {
         defaultProvider.connect.should.have.been.called
       })
       .then(done, done)
+    })
+  })
+
+  describe('#initialize', function () {
+    it('creates convenience accessors for collections', function (done) {
+      var provider = {
+        getCollectionNames: sinon.stub().returns(Q(['foo','baz']))
+      }
+      var query = {}
+      var minq = {
+        provider: provider,
+        from: sinon.stub().returns(query)
+      }
+      Minq.prototype.initialize.call(minq).then(function () {
+        provider.getCollectionNames.should.have.been.called
+        expect('foo' in minq).to.equal(true)
+        expect('baz' in minq).to.equal(true)
+
+        var foo = minq.foo
+        minq.from.should.have.been.calledWithExactly('foo')
+        foo.should.equal(query)
+
+        var baz = minq.baz
+        minq.from.should.have.been.calledWithExactly('baz')
+
+      })
+      .then(done, done)
+    })
+  })
+
+  describe('#disconnect', function () {
+    it('calls provider#disconnect', function (done) {
+      var provider = {
+        disconnect: sinon.stub().returns(Q())
+      }
+      var minq = new Minq(provider)
+      minq.disconnect().then(function () {
+        provider.disconnect.should.have.been.called
+      })
+      .then(done, done)
+    })
+  })
+
+  describe('#from', function () {
+    it('creates a new Query', function () {
+      var provider = {}
+
+      var Query = function (provider) {
+        var self = this
+        this.provider = provider
+        this.from = sinon.stub().returns(self)
+      }
+      var Minq = moquire('../index', {
+        './query': Query
+      })
+      var minq = new Minq(provider)
+
+      var q = minq.from('foo')
+
+      q.should.be.instanceof(Query)
+      q.provider.should.equal(provider)
+      q.from.should.have.been.calledWithExactly('foo')
     })
   })
 })

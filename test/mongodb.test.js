@@ -68,6 +68,24 @@ describe('MongoDb', function () {
     })
   })
 
+  describe('#disconnect', function () {
+    it('calls underlying close', function (done) {
+      var db = {
+        close: function (force, callback) {
+          db.close.args = arguments
+          process.nextTick(function () {
+            callback(null)
+          })
+        }
+      }
+      var provider = new MongoDb(db)
+      provider.disconnect().then(function () {
+        db.close.args[0].should.equal(true)
+      })
+      .then(done, done)
+    })
+  })
+
   describe('#getCollectionNames', function () {
     it('calls underlying collectionNames', function (done) {
       var MongoDb = moquire('../mongodb')

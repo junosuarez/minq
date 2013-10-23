@@ -21,6 +21,12 @@ MongoDb.connect = function (connectionString, options) {
 
 var proto = MongoDb.prototype
 
+proto.disconnect = function () {
+  return this.db.then(function (db) {
+    var forceClose = true
+    return Q.ninvoke(db, 'close', forceClose)
+  })
+}
 
 proto.getCollectionNames = function () {
   return this.db.then(function (db) {
