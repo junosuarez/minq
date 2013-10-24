@@ -84,7 +84,8 @@ proto.byId = function (id) {
 }
 proto.byIds = function (ids) {
   if (!Array.isArray(ids)) {
-    return this.error = new TypeError('ids must be an Array')
+    this.error = new TypeError('ids must be an Array')
+    return this
   }
   return this
     .where({_id: {$in: ids}})
@@ -102,6 +103,17 @@ proto.assert = function (assertion, message) {
   }
   this._.assertion = assertion
   return this
+}
+
+proto.expect = function (quantity) {
+  if (typeof quantity !== 'number' || !Number.isFinite(quantity)) {
+    this.error = new TypeError('quantity must be a number')
+    return this
+  }
+  return this.assert(function (result) {
+    return result &&
+      (result.length ? (quantity == result.length) : quantity == 1)
+  }, 'Expected ' + quantity + ' result' + (quantity == 1 ? '' : 's'))
 }
 
 var _checkAssertion = function (assertion) {

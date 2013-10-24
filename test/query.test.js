@@ -328,6 +328,40 @@ describe('Query', function () {
 
   })
 
+  describe('expect', function () {
+    it('is shorthand for assert length', function () {
+      var q = new Query(new StubDb)
+      q.assert = sinon.stub().returns(q)
+
+      q.expect(1)
+
+      q.assert.should.have.been.called
+
+    })
+    it('errors if not called with a finite number', function () {
+      var q = {}
+
+      Query.prototype.expect.call(q)
+      q.error.should.be.instanceof(TypeError)
+      q.error.should.match(/number/)
+      delete q.error
+
+      Query.prototype.expect.call(q, NaN)
+      q.error.should.be.instanceof(TypeError)
+      q.error.should.match(/number/)
+      delete q.error
+
+      Query.prototype.expect.call(q, Infinity)
+      q.error.should.be.instanceof(TypeError)
+      q.error.should.match(/number/)
+      delete q.error
+
+      Query.prototype.expect.call(q, -Infinity)
+      q.error.should.be.instanceof(TypeError)
+      q.error.should.match(/number/)
+
+    })
+  })
 
   describe('commands', function () {
 
