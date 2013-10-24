@@ -13,7 +13,6 @@ var Minq = module.exports = function Minq (provider) {
     .then(function (provider) {
       return self
     })
-
 }
 
 Minq.connect = function (connectionString, options) {
