@@ -1,0 +1,1617 @@
+{
+  "result": [
+    {
+      "/computer/programming_language/introduced": "1983",
+      "id": "/en/cplusplus",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/generic_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "C++"
+    },
+    {
+      "/computer/programming_language/introduced": "1972",
+      "id": "/wikipedia/fr_id/1711",
+      "language_paradigms": [
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "C"
+    },
+    {
+      "/computer/programming_language/introduced": "1970",
+      "id": "/en/forth",
+      "language_paradigms": [
+        {
+          "id": "/en/stack-oriented_programming_language"
+        },
+        {
+          "id": "/en/concatenative_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Forth"
+    },
+    {
+      "/computer/programming_language/introduced": "1964",
+      "id": "/en/apl",
+      "language_paradigms": [
+        {
+          "id": "/en/mathematics"
+        },
+        {
+          "id": "/en/combinatory_logic"
+        },
+        {
+          "id": "/en/array_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/operator"
+        },
+        {
+          "id": "/en/structured_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "APL"
+    },
+    {
+      "/computer/programming_language/introduced": "1967",
+      "id": "/en/simula",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Simula"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/smalltalk",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Smalltalk"
+    },
+    {
+      "/computer/programming_language/introduced": "1986",
+      "id": "/en/objective-c",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Objective-C"
+    },
+    {
+      "/computer/programming_language/introduced": "1986",
+      "id": "/en/eiffel",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/design_by_contract"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Eiffel"
+    },
+    {
+      "/computer/programming_language/introduced": "2002",
+      "id": "/wikipedia/ja_id/1325633",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "J#"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/algol_68",
+      "language_paradigms": [
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/parallel_computing"
+        },
+        {
+          "id": "/en/concurrent_computing"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "ALGOL 68"
+    },
+    {
+      "/computer/programming_language/introduced": "1958",
+      "id": "/wikipedia/ru_id/17770",
+      "language_paradigms": [
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "ALGOL"
+    },
+    {
+      "/computer/programming_language/introduced": "1986",
+      "id": "/wikipedia/es/Lenguaje_de_programaci$00F3n_Oberon",
+      "language_paradigms": [
+        {
+          "id": "/en/reflective_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Oberon"
+    },
+    {
+      "/computer/programming_language/introduced": "1970",
+      "id": "/wikipedia/ru/$041F$0430$0441$043A$0430$043B$044C_$0028$044F$0437$044B$043A_$043F$0440$043E$0433$0440$0430$043C$043C$0438$0440$043E$0432$0430$043D$0438$044F$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/structured_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Pascal"
+    },
+    {
+      "/computer/programming_language/introduced": "1978",
+      "id": "/en/modula-2",
+      "language_paradigms": [
+        {
+          "id": "/en/modular_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Modula-2"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/wikipedia/de_id/1570385",
+      "language_paradigms": [{
+        "id": "/en/modular_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Mesa"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/dylan",
+      "language_paradigms": [
+        {
+          "id": "/en/dynamic_programming_language"
+        },
+        {
+          "id": "/en/reflective_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Dylan"
+    },
+    {
+      "/computer/programming_language/introduced": "1958",
+      "id": "/wikipedia/it_id/11078",
+      "language_paradigms": [
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/interpreted_language"
+        },
+        {
+          "id": "/en/mathematics"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Lisp"
+    },
+    {
+      "/computer/programming_language/introduced": "1957-04",
+      "id": "/en/fortran",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/generic_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Fortran"
+    },
+    {
+      "/computer/programming_language/introduced": "1964",
+      "id": "/en/pl_i",
+      "language_paradigms": [
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "PL/I"
+    },
+    {
+      "/computer/programming_language/introduced": "1995",
+      "id": "/wikipedia/bg_id/86164",
+      "language_paradigms": [
+        {
+          "id": "/en/reflective_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/dynamic_programming_language"
+        },
+        {
+          "id": "/en/interpreted_language"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Ruby"
+    },
+    {
+      "/computer/programming_language/introduced": "1972",
+      "id": "/en/prolog",
+      "language_paradigms": [
+        {
+          "id": "/en/logic_programming"
+        },
+        {
+          "id": "/en/declarative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Prolog"
+    },
+    {
+      "/computer/programming_language/introduced": "1987",
+      "id": "/en/erlang",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/concurrent_computing"
+        },
+        {
+          "id": "/en/actor_model"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Erlang"
+    },
+    {
+      "/computer/programming_language/introduced": "1991",
+      "id": "/wikipedia/fr/Python_$0028langage$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/interpreted_language"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/procedural_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Python"
+    },
+    {
+      "/computer/programming_language/introduced": "1990",
+      "id": "/en/haskell",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/interpreted_language"
+        },
+        {
+          "id": "/en/compiled_language"
+        },
+        {
+          "id": "/en/declarative_programming"
+        },
+        {
+          "id": "/en/combinatory_logic"
+        },
+        {
+          "id": "/en/lazy_evaluation"
+        },
+        {
+          "id": "/en/strongly-typed_programming_language"
+        },
+        {
+          "id": "/en/type_inference"
+        },
+        {
+          "id": "/en/mathematics"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Haskell"
+    },
+    {
+      "/computer/programming_language/introduced": "1985",
+      "id": "/en/caml",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Caml"
+    },
+    {
+      "/computer/programming_language/introduced": "1973",
+      "id": "/en/ml",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/type_inference"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "ML"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/common_lisp",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/generic_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Common Lisp"
+    },
+    {
+      "/computer/programming_language/introduced": "1995",
+      "id": "/en/php",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/interpreted_language"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "PHP"
+    },
+    {
+      "/computer/programming_language/introduced": "2000",
+      "id": "/wikipedia/it_id/26842",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/component_oriented_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/generic_programming"
+        },
+        {
+          "id": "/en/concurrent_computing"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "C#"
+    },
+    {
+      "/computer/programming_language/introduced": "1987",
+      "id": "/en/perl",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/dynamic_programming_language"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/generic_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Perl"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/m/025dw31",
+      "language_paradigms": [
+        {
+          "id": "/en/interpreted_language"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/dynamic_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Pike"
+    },
+    {
+      "/computer/programming_language/introduced": "1981",
+      "id": "/en/bbc_basic",
+      "language_paradigms": [{
+        "id": "/en/procedural_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "BBC BASIC"
+    },
+    {
+      "/computer/programming_language/introduced": "1975",
+      "id": "/en/scheme",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/interpreted_language"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/procedural_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Scheme"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/standard_ml_of_new_jersey",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Standard ML of New Jersey"
+    },
+    {
+      "/computer/programming_language/introduced": "1996",
+      "id": "/en/squeak",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Squeak"
+    },
+    {
+      "/computer/programming_language/introduced": "1996",
+      "id": "/en/vbscript",
+      "language_paradigms": [{
+        "id": "/en/interpreted_language"
+      }],
+      "type": "/computer/programming_language",
+      "name": "VBScript"
+    },
+    {
+      "/computer/programming_language/introduced": "1993",
+      "id": "/en/lua_programming_language",
+      "language_paradigms": [
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/prototype-based_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Lua"
+    },
+    {
+      "/computer/programming_language/introduced": "1997",
+      "id": "/en/ecmascript",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/prototype-based_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "ECMAScript"
+    },
+    {
+      "/computer/programming_language/introduced": "2003",
+      "id": "/en/groovy",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/dynamic_programming_language"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Groovy"
+    },
+    {
+      "/computer/programming_language/introduced": "1995",
+      "id": "/en/javascript",
+      "language_paradigms": [
+        {
+          "id": "/wikipedia/fr/Asynchronous_JavaScript_and_XML"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/prototype-based_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/reflective_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "JavaScript"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/starlogo",
+      "language_paradigms": [
+        {
+          "id": "/en/multi-agent_system"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/educational_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "StarLogo"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/subtext_programming_language",
+      "language_paradigms": [{
+        "id": "/en/example_centric_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Subtext"
+    },
+    {
+      "/computer/programming_language/introduced": "2001",
+      "id": "/en/scala_programming_language",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/concurrent_computing"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Scala"
+    },
+    {
+      "/computer/programming_language/introduced": "2003",
+      "id": "/en/factor_programming_language",
+      "language_paradigms": [
+        {
+          "id": "/en/concatenative_programming_language"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/stack-oriented_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Factor"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/bigloo",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Bigloo"
+    },
+    {
+      "/computer/programming_language/introduced": "2001",
+      "id": "/en/joy_programming_language",
+      "language_paradigms": [
+        {
+          "id": "/en/concatenative_programming_language"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/stack-oriented_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Joy"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/stackless_python",
+      "language_paradigms": [{
+        "id": "/en/concurrent_computing"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Stackless Python"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/m/02xj4df",
+      "language_paradigms": [
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Vala"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/m/02xkxpr",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/dynamic_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Mantra"
+    },
+    {
+      "/computer/programming_language/introduced": "1991",
+      "id": "/wikipedia/es/Lenguaje_de_programaci$00F3n_Oz",
+      "language_paradigms": [
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/logic_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/parallel_computing"
+        },
+        {
+          "id": "/en/concurrent_computing"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Oz"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/supertalk",
+      "language_paradigms": [{
+        "id": "/en/event_driven_programming_language"
+      }],
+      "type": "/computer/programming_language",
+      "name": "SuperTalk"
+    },
+    {
+      "/computer/programming_language/introduced": "1982",
+      "id": "/en/postscript",
+      "language_paradigms": [
+        {
+          "id": "/en/stack-oriented_programming_language"
+        },
+        {
+          "id": "/en/concatenative_programming_language"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "PostScript"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/java_bytecode",
+      "language_paradigms": [{
+        "id": "/en/stack-oriented_programming_language"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Java bytecode"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/emacs_lisp",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Emacs Lisp"
+    },
+    {
+      "/computer/programming_language/introduced": "2002",
+      "id": "/wikipedia/de_id/216742",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/prototype-based_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Io"
+    },
+    {
+      "/computer/programming_language/introduced": "1987",
+      "id": "/wikipedia/ja_id/905339",
+      "language_paradigms": [
+        {
+          "id": "/en/prototype-based_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Self"
+    },
+    {
+      "/computer/programming_language/introduced": "2006",
+      "id": "/wikipedia/fr/Cat_$0028langage$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/concatenative_programming_language"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/stack-oriented_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Cat"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/unlambda",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Unlambda"
+    },
+    {
+      "/computer/programming_language/introduced": "2002",
+      "id": "/en/f_sharp_programming_language",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/type_inference"
+        },
+        {
+          "id": "/en/concurrent_computing"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "F#"
+    },
+    {
+      "/computer/programming_language/introduced": "2001",
+      "id": "/en/processing",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Processing"
+    },
+    {
+      "/computer/programming_language/introduced": "1996",
+      "id": "/en/pure_data",
+      "language_paradigms": [{
+        "id": "/en/visual_programming_language"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Pure Data"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/pl_sql",
+      "language_paradigms": [
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "PL/SQL"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/pl_pgsql",
+      "language_paradigms": [{
+        "id": "/en/imperative_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "PL/pgSQL"
+    },
+    {
+      "/computer/programming_language/introduced": "1995",
+      "id": "/en/coldfusion_markup_language",
+      "language_paradigms": [
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "ColdFusion Markup Language"
+    },
+    {
+      "/computer/programming_language/introduced": "1998",
+      "id": "/en/actionscript",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/prototype-based_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "ActionScript"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/javafx_script",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/declarative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "JavaFX Script"
+    },
+    {
+      "/computer/programming_language/introduced": "1990",
+      "id": "/wikipedia/ja/J_$0028$30D7$30ED$30B0$30E9$30DF$30F3$30B0$8A00$8A9E$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/function-level_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/array_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "J"
+    },
+    {
+      "/computer/programming_language/introduced": "2000",
+      "id": "/en/alice_ml",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/concurrent_computing"
+        },
+        {
+          "id": "/en/distributed_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/parallel_computing"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Alice ML"
+    },
+    {
+      "/computer/programming_language/introduced": "1995-04-08",
+      "id": "/wikipedia/ru/Mercury_$0028$044F$0437$044B$043A_$043F$0440$043E$0433$0440$0430$043C$043C$0438$0440$043E$0432$0430$043D$0438$044F$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/logic_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Mercury"
+    },
+    {
+      "/computer/programming_language/introduced": "1983",
+      "id": "/en/sisal",
+      "language_paradigms": [
+        {
+          "id": "/en/dataflow_language"
+        },
+        {
+          "id": "/en/functional_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "SISAL"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/lazy_ml",
+      "language_paradigms": [
+        {
+          "id": "/en/lazy_evaluation"
+        },
+        {
+          "id": "/en/functional_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Lazy ML"
+    },
+    {
+      "/computer/programming_language/introduced": "2001-11",
+      "id": "/en/judoscript",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Judoscript"
+    },
+    {
+      "/computer/programming_language/introduced": "2006",
+      "id": "/wikipedia/it/Vala_$0028linguaggio$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Vala"
+    },
+    {
+      "/computer/programming_language/introduced": "2004",
+      "id": "/en/quark_framework",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Quark Framework"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/keykit",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Keykit"
+    },
+    {
+      "/computer/programming_language/introduced": "1998",
+      "id": "/en/logtalk",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/logic_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Logtalk"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/txl",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "TXL"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/jade_programming_language",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "JADE"
+    },
+    {
+      "/computer/programming_language/introduced": "1999",
+      "id": "/wikipedia/pt/Bistro_$0028linguagem_de_programa$00E7$00E3o$0029",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Bistro"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/visual_prolog",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Visual Prolog"
+    },
+    {
+      "/computer/programming_language/introduced": "1972",
+      "id": "/en/sasl_programming_language",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "SASL"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/objectlogo",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "ObjectLOGO"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/object_lisp",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Object Lisp"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/aldor",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/logic_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/dependent_type"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Aldor"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/multilisp",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "MultiLisp"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/f-script_programming_language",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/array_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "F-Script"
+    },
+    {
+      "/computer/programming_language/introduced": "2006",
+      "id": "/en/windows_powershell",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/pipeline_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Windows PowerShell"
+    },
+    {
+      "/computer/programming_language/introduced": "1986",
+      "id": "/en/object_pascal",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        },
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/generic_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Object Pascal"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/cecil_programming_language",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Cecil"
+    },
+    {
+      "/computer/programming_language/introduced": "1983",
+      "id": "/en/prograph",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/visual_programming_language"
+        },
+        {
+          "id": "/en/dataflow_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Prograph"
+    },
+    {
+      "/computer/programming_language/introduced": "1999",
+      "id": "/en/s2_programming_language",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "S2"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/lexico",
+      "language_paradigms": [{
+        "id": "/en/object-oriented_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "Lexico"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/q_programming_language",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Q"
+    },
+    {
+      "/computer/programming_language/introduced": "1966",
+      "id": "/en/iswim",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/imperative_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "ISWIM"
+    },
+    {
+      "/computer/programming_language/introduced": "1959",
+      "id": "/en/cobol",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/procedural_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "COBOL"
+    },
+    {
+      "/computer/programming_language/introduced": "2005",
+      "id": "/wikipedia/fr/Neko_$0028langage$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/prototype-based_programming"
+        },
+        {
+          "id": "/en/structured_programming"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Neko"
+    },
+    {
+      "/computer/programming_language/introduced": "2006",
+      "id": "/wikipedia/en_title/Cobra_$0028programming_language$0029",
+      "language_paradigms": [
+        {
+          "id": "/en/object-oriented_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "Cobra"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/l_programming_language",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "L programming language"
+    },
+    {
+      "/computer/programming_language/introduced": null,
+      "id": "/en/fractran",
+      "language_paradigms": [{
+        "id": "/en/functional_programming"
+      }],
+      "type": "/computer/programming_language",
+      "name": "FRACTRAN"
+    },
+    {
+      "/computer/programming_language/introduced": "2007",
+      "id": "/m/02vmlcq",
+      "language_paradigms": [
+        {
+          "id": "/en/functional_programming"
+        },
+        {
+          "id": "/en/multi-paradigm_programming_language"
+        },
+        {
+          "id": "/en/stack-oriented_programming_language"
+        }
+      ],
+      "type": "/computer/programming_language",
+      "name": "V"
+    }
+  ]
+}
