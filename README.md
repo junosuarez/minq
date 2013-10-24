@@ -6,40 +6,69 @@ fluent queries for mongodb using promises
     $ npm install minq
 
 ## usage example
+```js
+var Minq = require('minq')
 
-    var minq = require('minq')
+Minq.connect(connectionString).then(function (db) {})
 
-    minq.connect(connectionString)
+db.from('foo')
+  .where({name: /John/i})
+  .select(['name', 'email', 'homeAddress.zipCode'])
+  .limit(1000)
+// => Promise<Array>
 
-    minq
-      .from('foo')
-      .where({name: minq.like('John')})
-      .select(['name', 'email', 'homeAddress.zipCode'])
-      .limit(1000)
-      .toArray()
+db.from('foo')
+  .skip(20)
+  .limit(50)
+  .sort('name')
+// => Promise<Array>
+```
+As a bonus, convenience collection accessors are added to the `db` object:
+```js
+db.foo
+// equivalent to db.from('foo')
+```
 
-    minq
-      .from('foo')
-      .skip(20)
-      .limit(50)
-      .sort('name')
-      .toArray()
+To return a scalar (single) value:
+```js
+db.foo.first().then(function (aFoo) {
+  console.log(aFoo
+})
+```
 
-    minq
-      .from('foo')
-      .stream()
+We can end a query by `.pipe`ing to a stream:
+```js
+db.foo.pipe(process.stdout)
+```
 
-    minq
-      .from('foo')
-      .where({email: /lol\.com$/)
-      .count()
+Or we can enumerate over a query in a streaming fashion, with a promise to indicate when the whole stream is done (including processing other tasks):
+```js
+db.spiders
+  .where({scary: false})
+  .forEach(function (spider) {
+    return db.spiders
+      .byId(spider._id)
+      .update({$set:{scary: true}})
+  })
+  .then(function () {
+    console.log('Fixed some misinformation about some spiders!')
+  })
 
-    minq
-      .from('foo')
-      .insert({name: 'Melissa', email: 'm@m.com'})
+Other commands:
+```
+db.foo
+  .where({email: /lol\.com$/)
+  .count()
+// => Promise<Number>
 
-    minq
-      .drop('foo')
+db.foo
+  .insert({name: 'Melissa', email: 'm@m.com'})
+// => Promise
+
+db.foo
+  .upsert({_id: 15, name: 'Cian'})
+// => Promise
+```
 
 ## tools
 - test harness with [rope](https://github.com/jden/rope)
@@ -47,17 +76,23 @@ fluent queries for mongodb using promises
 
 ## good to know
 
-minq queries are contstructed starting with a db and collection, then by adding various options and constraints, and ending with a finalizer. Finalizers return a [Q promise](https://npmjs.org/package/q).
+Minq queries are contstructed starting with a db and collection, then by adding various options and constraints.
 
-For `.one` and `.toArray`, an .`expect(number)` option can be used. If the query does not match the expected number, the promise will be rejected.
+Minq queries implement the [Promises/A+](https://github.com/promises-aplus/promises-spec) interface - that is, you get the asynchronous value of the query results by calling the `.then()` method.
 
-Read Finalizers are: `.toArray` `.one` `.stream` `.count` `.assertExists` `.checkExists`
+Read queries can also be treated as a Node.js stream, using the `.pipe()` method. If an error occurs when building or executing the query, it will be sent as a stream error. Streaming is useful when dealing with a large number of query results.
 
-Note, `.stream` returns a node Stream, not a promise
 
-Mutator Finalizers are: `.insert` `.update` `.upsert` `.remove` `.removeAll` `.pull` `.findAndModify`
 
 ## api reference
+
+- Minq
+  - .connect()
+  - #ready
+  - #disconnect
+  -
+- Minq.Query
+
 
 Uses [jsig](https://github.org/jden/jsig) notation.
 
