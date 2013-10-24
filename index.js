@@ -9,7 +9,7 @@ var Minq = module.exports = function Minq (provider) {
   var self = this
   this.provider = provider
   this.ready = Q(this.provider.ready)
-    .then(this._initialize)
+    .then(this._initialize.bind(this))
     .then(function (provider) {
       return self
     })

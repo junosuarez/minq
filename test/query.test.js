@@ -18,7 +18,6 @@ describe('Query', function () {
       q._.db.should.equal(db)
       q._.should.have.property('collection')
       q._.should.have.property('query')
-      q._.should.have.property('projection')
       q._.should.have.property('options')
 
     })
@@ -73,17 +72,17 @@ describe('Query', function () {
   })
 
   describe('#select', function () {
-    it('sets _.projection', function () {
+    it('sets _.options.fields', function () {
       var q = new Query
-      expect(q._.projection).to.equal(null)
+      expect(q._.options.fields).to.equal(undefined)
       q.select({_id: true, name: true})
         .should.equal(q)
-      q._.projection.should.deep.equal({_id: true, name: true})
+      q._.options.fields.should.deep.equal({_id: true, name: true})
     })
     it('takes arrays of string field names', function () {
       var q = new Query
       q.select(['a','b','c'])
-      q._.projection.should.deep.equal({a: true, b: true, c: true})
+      q._.options.fields.should.deep.equal({a: true, b: true, c: true})
     })
   })
 

@@ -121,6 +121,29 @@ describe('MongoDb', function () {
     })
   })
 
+  describe('#dropCollection', function () {
+    it('calls underlying drop', function (done) {
+      var collection = {
+        drop: function (callback) {
+          collection.drop.called = true
+          process.nextTick(function () {
+            callback(null)
+          })
+        }
+      }
+
+      var mongodb = new MongoDb({})
+      mongodb._collection = sinon.stub().returns(Q(collection))
+
+      mongodb.dropCollection('foo').then(function (collectionNames) {
+        mongodb._collection.should.have.been.calledOnce
+        mongodb._collection.firstCall.args.should.deep.equal([{collection: 'foo'}])
+        collection.drop.called.should.equal(true)
+      })
+      .then(done, done)
+    })
+  })
+
   describe('#run', function () {
     ['read','count','exists','insert', 'update', 'findAndModify', 'modifyAndFind', 'pull',
     'upsert', 'remove', 'removeAll', 'aggregate'].forEach(function (command) {
@@ -200,11 +223,20 @@ describe('MongoDb', function () {
 
       var q = StubQuery()
       var mdb = new MongoDb()
+      var rs = new stream.Readable()
+      rs._read = function () {
+      }
+      rs._pipe = rs.pipe
+      rs.pipe = function () {
+        rs.pipe.called = true
+        rs.pipe.args = arguments
+        return rs._pipe.apply(rs, arguments)
+      }
       var underlyingStream = {
-        pipe: sinon.spy()
+        pipe: sinon.stub().returns(rs)
       }
       var cursor = {
-        toStream: sinon.stub().returns(underlyingStream)
+        stream: sinon.stub().returns(rs)
       }
       var collection = {}
       mdb._collection = sinon.stub().returns(Q(collection))
@@ -217,8 +249,9 @@ describe('MongoDb', function () {
           mdb._collection.should.have.been.calledWithExactly(q)
           mdb._find.should.have.been.calledOnce
           mdb._find.should.have.been.calledWithExactly(collection, q)
-          cursor.toStream.should.have.been.calledOnce
-          underlyingStream.pipe.should.have.been.calledOnce
+          cursor.stream.should.have.been.calledOnce
+          rs.pipe.called.should.equal(true)
+          rs.pipe.args[0].should.equal(s)
           done()
         } catch (e) {
           done(e)
@@ -226,13 +259,17 @@ describe('MongoDb', function () {
       })
       s.on('error', done)
 
+      process.nextTick(function () {
+        rs.emit('end')
+      })
+
     })
   })
 
   describe('#_find', function () {
     it('calls find', function (done) {
 
-      var find = function (query, callback) {
+      var find = function (query, opts, callback) {
         find.args = arguments
         process.nextTick(function () {
           callback(null, [])
@@ -247,6 +284,64 @@ describe('MongoDb', function () {
 
       mdb._find(collection, q).then(function () {
         find.args[0].should.equal(q.query)
+      })
+      .then(done, done)
+
+    })
+    it('passes default options', function (done) {
+
+      var find = function (query, opts, callback) {
+        find.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = {find:find}
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {a: 1}
+      var mdb = new MongoDb()
+
+      mdb._find(collection, q).then(function () {
+        // necessary to return fields
+        find.args[1].fields.should.deep.equal({})
+      })
+      .then(done, done)
+
+    })
+    it('passes projection, skip, limit, and options', function (done) {
+
+      var find = function (query, opts, callback) {
+        find.args = arguments
+        process.nextTick(function () {
+          callback(null, [])
+        })
+      }
+      var collection = {find:find}
+
+      var q = StubQuery()
+      q.collection = 'fooCollection'
+      q.query = {a: 1}
+      q.projection = {a: true}
+      q.skip = 10
+      q.limit = 20
+      q.options = {
+        fields: {a: true},
+        skip: 10,
+        limit: 20,
+        explain: true
+      }
+      var mdb = new MongoDb()
+
+      mdb._find(collection, q).then(function () {
+        find.args[0].should.equal(q.query)
+        find.args[1].should.deep.equal({
+          fields: q.projection,
+          skip: 10,
+          limit: 20,
+          explain: true
+        })
       })
       .then(done, done)
 
@@ -314,7 +409,12 @@ describe('MongoDb', function () {
   describe('#_count', function () {
     it('calls underlying count', function (done) {
 
-      var count = sinon.stub().returns(Q(108))
+      var count = function (query, callback) {
+        count.args = arguments
+        process.nextTick(function () {
+          callback(null, 108)
+        })
+      }
       var collection = {count:count}
 
       var q = StubQuery()
@@ -324,7 +424,7 @@ describe('MongoDb', function () {
 
       mdb._count(collection, q).then(function (val) {
         val.should.equal(108)
-        count.should.have.been.calledWithExactly(q.query)
+        count.args[0].should.equal(q.query)
       })
       .then(done, done)
 
@@ -341,9 +441,11 @@ describe('MongoDb', function () {
       var mdb = new MongoDb()
       mdb._count = count
 
-      mdb._exists({}, q).then(function (val) {
+      var collection = {}
+
+      mdb._exists(collection, q).then(function (val) {
         val.should.equal(true)
-        count.should.have.been.calledWithExactly(q.query)
+        count.should.have.been.calledWithExactly(collection, q.query)
 
       })
       .then(done, done)
@@ -359,9 +461,11 @@ describe('MongoDb', function () {
       var mdb = new MongoDb()
       mdb._count = count
 
-      mdb._exists({}, q).then(function (val) {
+      var collection = {}
+
+      mdb._exists(collection, q).then(function (val) {
         val.should.equal(false)
-        count.should.have.been.calledWithExactly(q.query)
+        count.should.have.been.calledWithExactly(collection, q.query)
 
       })
       .then(done, done)

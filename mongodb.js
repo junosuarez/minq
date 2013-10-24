@@ -38,6 +38,13 @@ proto.getCollectionNames = function () {
   })
 }
 
+proto.dropCollection = function (collectionName) {
+  return this._collection({collection: collectionName})
+    .then(function (collection) {
+      return Q.ninvoke(collection, 'drop')
+    })
+}
+
 // (Query) => Promise
 proto.run = function (query) {
   var self = this
@@ -85,8 +92,7 @@ proto.runAsStream = function (query) {
   self._collection(query).then(function (collection) {
     self._find(collection, query)
       .then(function (cursor) {
-        cursor.toStream().pipe(outStream)
-        outStream.end()
+        cursor.stream().pipe(outStream)
       })
       .then(null, function (err) {
         process.nextTick(function () {
@@ -115,7 +121,9 @@ proto._read = function (collection, query) {
 
 // (MongoCollection, Query) => Promise<MongoCursor>
 proto._find = function(collection, query) {
-  return Q.ninvoke(collection, 'find', query.query)
+  query.options = query.options || {}
+  query.options.fields = query.options.fields || {}
+  return Q.ninvoke(collection, 'find', query.query, query.options)
 }
 
 // (Query) => Promise<MongoCollection>
@@ -127,12 +135,12 @@ proto._collection = function(query) {
 
 // (MongoCollection, Query) => Promise<Number>
 proto._count = function (collection, query) {
-    return collection.count(query.query)
+    return Q.ninvoke(collection, 'count', query.query)
 }
 
 // (MongoCollection?, Query) => Promise<Boolean>
 proto._exists = function (collection, query) {
-  return this._count(query.query).then(function (count) {
+  return this._count(collection, query.query).then(function (count) {
     return count > 0
   })
 }

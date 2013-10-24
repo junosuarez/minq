@@ -51,7 +51,7 @@ describe('Minq', function () {
 
       var minq = new Minq(provider)
       minq.ready.then(function () {
-        minq._initialize.should.have.been.called
+        minq._initialize.should.have.been.calledOn(minq)
       })
       .then(done, done)
     })

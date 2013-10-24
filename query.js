@@ -8,7 +8,6 @@ var Query = module.exports = function Query(db){
     collection: null,
     command: 'read',
     query: {},
-    projection: null,
     options: {
       safe: true
     }
@@ -22,7 +21,6 @@ proto.clone = function () {
   var q = new Query(this._.db)
   q._.collection = this._.collection
   q._.query = deepClone(this._.query)
-  q._.projection = deepClone(this._.projection)
   q._.options = deepClone(this._.options)
   return q
 }
@@ -47,13 +45,13 @@ proto.not = function (key) {
 proto.select = function (projection) {
   // accept arrays of field names to include (dot-notation ok)
   if (Array.isArray(projection)) {
-    this._.projection = projection.reduce(function (projection, field) {
-      projection[field] = true
-      return projection
-    }, {})
-  } else {
-    this._.projection = projection
+    return this.select(projection.reduce(function (projection, field) {
+        projection[field] = true
+        return projection
+      }, {}))
   }
+
+  this._.options.fields = projection
   return this
 }
 proto.limit = function (number) {
