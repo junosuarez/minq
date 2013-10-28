@@ -63,3 +63,5 @@ Minq.ObjectId = function (id) {
   }
   return strId
 }
+
+Minq.Query = Query

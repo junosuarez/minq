@@ -23,6 +23,15 @@ describe('integration tests', function () {
     minq.then(function (_db){
       db = _db
     })
+    .then(null, function (e){
+      if (e && /connect/.test(e.message)) {
+        console.log('\n')
+        console.log('=======================================')
+        console.log('== Make sure local mongod is running ==')
+        console.log('=======================================')
+      }
+      throw e
+    })
     .then(done, done)
   })
 
@@ -123,6 +132,34 @@ describe('integration tests', function () {
         .then(done, done)
     })
 
+    it('first returns scalar', function (done) {
+      db.from(collection)
+        .first()
+        .then(function (val) {
+          Array.isArray(val).should.equal(false)
+        })
+        .then(done, done)
+    })
+    it('first is rejected if no match', function (done) {
+      db.from(collection)
+        .first()
+        .where({name: 'canhazscript'})
+        .then(function (val) {
+          throw new Error('should not be fulfilled')
+        }, function (err) {
+          err.should.be.instanceof(Error)
+        })
+        .then(done, done)
+    })
+    it('first defaults if no match but default given', function (done) {
+      db.from(collection)
+        .firstOrDefault({isDefault: true})
+        .where({name: 'C+++'})
+        .then(function (val) {
+          val.isDefault.should.equal(true)
+        })
+        .then(done, done)
+    })
   })
 
 })

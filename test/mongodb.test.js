@@ -387,6 +387,43 @@ describe('MongoDb', function () {
       })
       .then(done, done)
     })
+    it('errors if scalar and no match and no default', function (done) {
+      var q = StubQuery()
+      q.first = true
+      var mdb = new MongoDb()
+      var cursor = {
+        toArray: function (callback) {
+          process.nextTick(function () {
+            callback(null, [])
+          })
+        }
+      }
+      mdb._find = sinon.stub().returns(Q(cursor))
+      mdb._read({}, q).then(function () {
+        throw new Error('should not resolve')
+      }, function (err) {
+        err.should.match(/no results and no default value specified/)
+      })
+      .then(done, done)
+    })
+    it('defaults if scalar and no match but with default',function (done) {
+      var q = StubQuery()
+      q.first = true
+      q._default = {def: 'ault'}
+      var mdb = new MongoDb()
+      var cursor = {
+        toArray: function (callback) {
+          process.nextTick(function () {
+            callback(null, [])
+          })
+        }
+      }
+      mdb._find = sinon.stub().returns(Q(cursor))
+      mdb._read({}, q).then(function (val) {
+        val.should.equal(q._default)
+      })
+      .then(done, done)
+    })
   })
 
   describe('#_collection', function () {

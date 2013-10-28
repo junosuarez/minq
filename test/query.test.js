@@ -68,7 +68,7 @@ describe('Query', function () {
     it('checks a keypath for falsy-ness', function () {
       var q = new Query
       q.not('_archived')
-      q._.query.should.deep.equal({'_archived': {$in: [false, null, undefined]}})
+      q._.query.should.deep.equal({'_archived': {$in: [false, null, undefined, 0]}})
     })
   })
 
@@ -143,6 +143,32 @@ describe('Query', function () {
       q._.options.limit.should.equal(1)
     })
   })
+
+  describe('#firstOrDefault', function () {
+    it('sets _.first to true', function () {
+      var q = new Query
+      expect(q._.first).to.equal(undefined)
+      q.firstOrDefault(10)
+        .should.equal(q)
+      q._.first.should.equal(true)
+    })
+    it('sets _.options.limit to 1', function () {
+      var q = new Query
+      expect(q._.options.limit).to.equal(undefined)
+      q.firstOrDefault(10)
+        .should.equal(q)
+      q._.options.limit.should.equal(1)
+    })
+    it('sets _._default', function () {
+      var q = new Query
+      var _default = {}
+      expect(q._._default).to.equal(undefined)
+      q.firstOrDefault(_default)
+        .should.equal(q)
+      q._._default.should.equal(_default)
+    })
+  })
+
 
   describe('#count', function () {
     it('sets _.command to "count"', function () {

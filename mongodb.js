@@ -111,8 +111,14 @@ proto._read = function (collection, query) {
 
     // handle expected scalar return value
     if (query.first) {
-      results = results.then(function (val) {
-        return val[0]
+      results = results.then(function (results) {
+        if (results.length) {
+          return results[0]
+        }
+        if (query._default) {
+          return query._default
+        }
+        throw new Error('Query returned no results and no default value specified')
       })
     }
     return results

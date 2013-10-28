@@ -38,7 +38,7 @@ proto.where = function (clause) {
 
 proto.not = function (key) {
   var obj = {}
-  obj[key] = {$in: [false, null, undefined]}
+  obj[key] = {$in: [false, null, undefined, 0]}
   this.where(obj)
   return this
 }
@@ -74,6 +74,14 @@ proto.options = function (options) {
 // returns scalar result rather than collection
 proto.first = function () {
   this._.first = true
+  this.limit(1)
+  return this
+}
+
+// returns scalar result rather than collection
+proto.firstOrDefault = function (defaultValue) {
+  this._.first = true
+  this._._default = defaultValue
   this.limit(1)
   return this
 }
