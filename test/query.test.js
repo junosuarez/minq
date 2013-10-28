@@ -7,6 +7,7 @@ chai.use(require('chai-interface'))
 var StubDb = require('./stubDb')
 var Q = require('q')
 var stream = require('stream')
+var moquire = require('moquire')
 
 describe('Query', function () {
   var Query = require('../query')
@@ -168,10 +169,18 @@ describe('Query', function () {
       q.byId(23)
         .should.equal(q)
       q._.query.should.deep.equal({
-        _id: 23
+        _id: {$oid: '23'}
       })
       q._.options.limit.should.equal(1)
       q._.first.should.equal(true)
+    })
+    it('calls Query.ObjectId', function () {
+      var Query = moquire('../query')
+      Query.ObjectId = sinon.stub().returns('adf')
+      var q = new Query
+      q.byId(123)
+      Query.ObjectId.should.have.been.calledWithExactly(123)
+      q._.query._id.should.equal('adf')
     })
   })
 
@@ -182,7 +191,7 @@ describe('Query', function () {
       q.byIds([23, 19, 20])
         .should.equal(q)
       q._.query.should.deep.equal({
-        _id: {$in: [23, 19, 20]}
+        _id: {$in: [{$oid:'23'}, {$oid:'19'}, {$oid:'20'}]}
       })
       q._.options.limit.should.equal(3)
     })
@@ -191,6 +200,13 @@ describe('Query', function () {
       q.byIds(94)
       q.error.should.be.instanceof(TypeError)
       q.error.message.should.match(/Array/)
+    })
+    it('maps to Query.ObjectId', function () {
+      var Query = moquire('../query')
+      Query.ObjectId = sinon.stub().returns('adf')
+      var q = new Query
+      q.byIds([123,456,789])
+      Query.ObjectId.should.have.been.calledthrice
     })
   })
 
@@ -385,6 +401,23 @@ describe('Query', function () {
           .then(done, done)
       })
 
+    })
+  })
+
+
+  describe('.ObjectId', function () {
+    it('by default wraps in json', function () {
+      Query.ObjectId('abc')
+        .should.deep.equal({$oid: 'abc'})
+    })
+    it('passes through if input is already an oid object', function () {
+      var oid = {$oid: 'b33f'}
+      Query.ObjectId(oid).should.equal(oid)
+    })
+    it('toStrings input and wraps if not string or oid object', function () {
+      var foo = {toString: function () { return 'c0ffee' }}
+      Query.ObjectId(foo)
+        .should.deep.equal({$oid: 'c0ffee'})
     })
   })
 

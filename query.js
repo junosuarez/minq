@@ -1,6 +1,7 @@
 var deepClone = require('clone')
 var util = require('./util')
 var charybdis = require('charybdis')
+var toString = require('to-string')
 
 var Query = module.exports = function Query(db){
   this._ = {
@@ -78,8 +79,9 @@ proto.first = function () {
 }
 
 proto.byId = function (id) {
+  var oid = Query.ObjectId(id)
   return this
-    .where({_id: id})
+    .where({_id: oid})
     .first()
 }
 proto.byIds = function (ids) {
@@ -87,8 +89,9 @@ proto.byIds = function (ids) {
     this.error = new TypeError('ids must be an Array')
     return this
   }
+  var oids = ids.map(Query.ObjectId)
   return this
-    .where({_id: {$in: ids}})
+    .where({_id: {$in: oids }})
     .limit(ids.length)
 }
 
@@ -167,4 +170,16 @@ function command(name) {
   }
   fn.name = name
   return fn
+}
+
+Query.ObjectId = function (oid) {
+  var type = typeof oid
+  if (type === 'string') {
+    return {$oid: oid}
+  }
+  if (type === 'object' && oid.$oid) {
+    return oid
+  }
+
+  return {$oid: toString(oid)}
 }

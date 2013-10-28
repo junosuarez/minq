@@ -8,6 +8,7 @@ var Q = require('q')
 Q.longStackSupport = true
 var stream = require('stream')
 var through = require('through')
+var ObjectId = require('mongodb').ObjectID
 
 var Minq = require('../../')
 
@@ -26,7 +27,7 @@ describe('integration tests', function () {
   })
 
   afterEach(function (done) {
-    db.provider.dropCollection(collection)
+    db.store.dropCollection(collection)
       .then(function () {
         return db.disconnect()
       })
@@ -45,6 +46,20 @@ describe('integration tests', function () {
     })
     .then(done, done)
 
+  })
+
+  describe('bson objectids', function () {
+    it('works with byId', function (done) {
+      var oid = ObjectId()
+      db.from(collection).insert({_id: oid, test:true})
+      .then(function () {
+        return db.from(collection).byId(oid.toString())
+        .then(function (doc) {
+          doc.test.should.equal(true)
+        })
+      })
+      .then(done, done)
+    })
   })
 
   describe('readonly', function () {
