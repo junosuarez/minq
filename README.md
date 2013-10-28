@@ -41,7 +41,8 @@ We can end a query by `.pipe`ing to a stream:
 db.foo.pipe(process.stdout)
 ```
 
-Or we can enumerate over a query in a streaming fashion, with a promise to indicate when the whole stream is done (including processing other tasks):
+Or we can enumerate over a query in a streaming fashion, with a promise to
+indicate when the whole stream is done (including processing other tasks):
 ```js
 db.spiders
   .where({scary: false})
@@ -53,9 +54,10 @@ db.spiders
   .then(function () {
     console.log('Fixed some misinformation about some spiders!')
   })
+```
 
 Other commands:
-```
+```js
 db.foo
   .where({email: /lol\.com$/)
   .count()
@@ -76,11 +78,15 @@ db.foo
 
 ## good to know
 
-Minq queries are contstructed starting with a db and collection, then by adding various options and constraints.
+Minq queries are contstructed starting with a db and collection, then by adding
+various options and constraints.
 
 Minq queries implement the [Promises/A+](https://github.com/promises-aplus/promises-spec) interface - that is, you get the asynchronous value of the query results by calling the `.then()` method.
 
-Read queries can also be treated as a Node.js stream, using the `.pipe()` method. If an error occurs when building or executing the query, it will be sent as a stream error. Streaming is useful when dealing with a large number of query results.
+Read queries can also be treated as a Node.js stream, using the `.pipe()` method.
+If an error occurs when building or executing the query, it will be sent as a
+stream error. Streaming is useful when dealing with a large number of query
+results.
 
 
 
@@ -213,7 +219,8 @@ Sets the collection name.
 ### `Query#where(query: Object) => Query`
 `query` is a mongodb [query object](http://mongodb.github.com/node-mongodb-native/markdown-docs/queries.html#query-object), with standard `$` operators
 
-`where` can be called multiple times to add multiple query terms. Mongodb joins them with logical `AND`, see [$and](http://docs.mongodb.org/manual/reference/operator/and/#_S_and).
+`where` can be called multiple times to add multiple query terms. Mongodb joins
+them with logical `AND`, see [$and](http://docs.mongodb.org/manual/reference/operator/and/#_S_and).
 
 ### `Query#not(property : String) => Query`
 Adds to the `where` clause of a query, checking that a value is not JavaScript falsy.
@@ -221,7 +228,8 @@ Adds to the `where` clause of a query, checking that a value is not JavaScript f
 Equivalent to `where({'property': {$nin: [undefined, null, false, 0]}})`.
 
 ### `Query#select(fields: Object|Array<String>) => Query`
-`fields` is a mongodb projection object, with keys corresponding to the fields of the document you want to return. `fields` can also be an array of strings
+`fields` is a mongodb projection object, with keys corresponding to the fields
+of the document you want to return. `fields` can also be an array of strings
 indicating the property names.
 
 Example:
@@ -249,7 +257,8 @@ alias: `Query#orderBy`
 alias: `Query#take`
 
 ### `Query#skip(number: Number) => Query`
-`number` is a Number for the number of documents which otherwise match the query that you want to skip in the result
+`number` is a Number for the number of documents which otherwise match the query
+that you want to skip in the result
 
 ### `Query#first() => Query`
 Specifies that a scalar (single document) return value is expected, rather than
@@ -302,23 +311,30 @@ minq.from('users')
   })
 ```
 
-The implementation of `forEach` uses [`charybdis`](https://npm.im/charybdis) - please refer to
+The implementation of `forEach` uses [`charybdis`](https://npm.im/charybdis) -
+please refer to
 that module's documentation for more info.
 
 ### `Query#insert(doc: Object) => Promise<Object>`
-Insert a document collection. The promise is the inserted object, including _id if assigned by db.
+Insert a document collection. The promise is the inserted object, including _id
+if assigned by db.
 
 ### `Query#update(changes: Object) => Promise<Number>`
-Update documents in a collection with `changes`, a mongodb [setter or unsetter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update). Use with `Query.where` or include `_id` on the `changes` object. The promise is the count of updated documents.
+Update documents in a collection with `changes`, a mongodb [setter or unsetter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update).
+Use with `Query.where` or include `_id` on the `changes` object. The promise
+is the count of updated documents.
 
 ### `Query#upsert(setter: Object) => Promise<Number>`
-Create or update a document in a collection with `setter`, a mongodb [setter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update). The promise is the count of updated documents.
+Create or update a document in a collection with `setter`, a mongodb [setter](http://mongodb.github.com/node-mongodb-native/markdown-docs/insert.html#update).
+The promise is the count of updated documents.
 
 ### `Query#remove() => Promise<Number>`
-Remove documents matching a `where` query. The promise is the number of documents removed. Rejected if no `where` query is specified.
+Remove documents matching a `where` query. The promise is the number of
+documents removed. Rejected if no `where` query is specified.
 
 ### `Query#removeAll() => Promise<Number>`
-Remove all documents in a collection. The promise is the number of documents removed.
+Remove all documents in a collection. The promise is the number of
+documents removed.
 
 
 ## running the tests
@@ -336,7 +352,7 @@ As well, integration tests:
 jden <jason@denizac.org>
 
 ## license
-MIT. (c) jden <jason@denizac.org>. See LICENSE.md.
+MIT. (c) MMXIII jden <jason@denizac.org>. See LICENSE.md.
 
 <a href="http://promises-aplus.github.io/promises-spec/"><img src="https://secure.gravatar.com/avatar/1f78ca80239fd9154da65f3678b834c2?s=400&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="200" /></a>
 
