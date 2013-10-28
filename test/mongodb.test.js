@@ -400,7 +400,7 @@ describe('MongoDb', function () {
       }
       mdb._find = sinon.stub().returns(Q(cursor))
       mdb._read({}, q).then(function () {
-        throw new Error('should not resolve')
+        throw new Error('should not be fulfilled')
       }, function (err) {
         err.should.match(/no results and no default value specified/)
       })
