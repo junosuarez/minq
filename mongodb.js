@@ -1,20 +1,32 @@
-var Q = require('q')
+var Promise = require('bluebird')
 var stream = require('stream')
 var through = require('through')
 var mongodb = require('mongodb')
 
 var MongoDb = module.exports = function MongoDb(db) {
   var self = this
-  this.db = Q(db)
+  this.db = Promise.resolve(db)
   this.ready = this.db.then(function (db) {
     self._db = db
     return self
   })
 }
 
+function invoke(obj, method, args) {
+  var resolver = Promise.defer()
+  args = Array.prototype.slice.call(arguments, 2)
+  args.push(resolver.callback)
+  try {
+    obj[method].apply(obj, args)
+  } catch (e) {
+    resolver.reject(e)
+  }
+  return resolver.promise
+}
+
 MongoDb.connect = function (connectionString, options) {
   // create new MongoDbProvider from new MongoClient
-  var db = Q.nfcall(mongodb.MongoClient.connect,
+  var db = invoke(mongodb.MongoClient, 'connect',
     connectionString, options)
   return new MongoDb(db)
 }
@@ -24,13 +36,13 @@ var proto = MongoDb.prototype
 proto.disconnect = function () {
   return this.db.then(function (db) {
     var forceClose = true
-    return Q.ninvoke(db, 'close', forceClose)
+    return invoke(db, 'close', forceClose)
   })
 }
 
 proto.getCollectionNames = function () {
   return this.db.then(function (db) {
-    return Q.ninvoke(db, 'collectionNames').then(function (names) {
+    return invoke(db, 'collectionNames').then(function (names) {
       return names.map(function (name) {
         return name.name.replace(/^\w*\./, '')
       })
@@ -41,7 +53,7 @@ proto.getCollectionNames = function () {
 proto.dropCollection = function (collectionName) {
   return this._collection({collection: collectionName})
     .then(function (collection) {
-      return Q.ninvoke(collection, 'drop')
+      return invoke(collection, 'drop')
     })
 }
 
@@ -66,7 +78,7 @@ proto.run = function (query) {
         return self['_' + query.command](collection, query)
       })
     default:
-      return Q.reject(new Error('Unknown command:' + query.command))
+      return Promise.reject(new Error('Unknown command:' + query.command))
   }
 }
 
@@ -90,14 +102,14 @@ proto.runAsStream = function (query) {
   }
   var self = this
   self._collection(query).then(function (collection) {
-    self._find(collection, query)
+    return self._find(collection, query)
       .then(function (cursor) {
         cursor.stream().pipe(outStream)
       })
-      .then(null, function (err) {
-        process.nextTick(function () {
+    })
+    .catch(function (err) {
+      process.nextTick(function () {
           outStream.emit('error', err)
-        })
       })
     })
 
@@ -107,7 +119,7 @@ proto.runAsStream = function (query) {
 // (Query) => Promise
 proto._read = function (collection, query) {
   return this._find(collection, query).then(function (cursor) {
-    var results = Q.ninvoke(cursor, 'toArray')
+    var results = invoke(cursor, 'toArray')
 
     // handle expected scalar return value
     if (query.first) {
@@ -129,7 +141,7 @@ proto._read = function (collection, query) {
 proto._find = function(collection, query) {
   query.options = query.options || {}
   query.options.fields = query.options.fields || {}
-  return Q.ninvoke(collection, 'find', query.query, query.options)
+  return invoke(collection, 'find', query.query, query.options)
 }
 
 // (Query) => Promise<MongoCollection>
@@ -141,7 +153,7 @@ proto._collection = function(query) {
 
 // (MongoCollection, Query) => Promise<Number>
 proto._count = function (collection, query) {
-    return Q.ninvoke(collection, 'count', query.query)
+    return invoke(collection, 'count', query.query)
 }
 
 // (MongoCollection?, Query) => Promise<Boolean>
@@ -154,14 +166,14 @@ proto._exists = function (collection, query) {
 // (Query) => Promise
 proto._aggregate = function (collection, query) {
   if (!Array.isArray(query.commandArg)) {
-    return Q.reject(new TypeError('Argument must be an array'))
+    return Promise.reject(new TypeError('Argument must be an array'))
   }
-  return Q.ninvoke(collection, 'aggregate', query.commandArg, query.options)
+  return invoke(collection, 'aggregate', query.commandArg, query.options)
 }
 
 // (Query) => Promise
 proto._insert = function (collection, query) {
-  return Q.ninvoke(collection, 'insert', query.commandArg, query.options)
+  return invoke(collection, 'insert', query.commandArg, query.options)
 }
 
 // (Query) => Promise
@@ -179,7 +191,7 @@ proto._update = function (collection, query) {
     delete query.commandArg._id
     query.query._id = restoreId
   }
-  var op = Q.ninvoke(collection, 'update', query.query, query.commandArg, query.options)
+  var op = invoke(collection, 'update', query.query, query.commandArg, query.options)
 
   if (restoreId) {
     op = op.then(function (val) {
@@ -200,7 +212,7 @@ proto._findAndModify = function (collection, query) {
   query.options.new = false
   query.options.upsert = false
 
-  return Q.ninvoke(collection, 'findAndModify',
+  return invoke(collection, 'findAndModify',
     query.query, query.options.sort, query.commandArg, query.options)
 }
 
@@ -210,32 +222,32 @@ proto._modifyAndFind = function (collection, query) {
   query.options.new = true
   query.options.upsert = false
 
-  return Q.ninvoke(collection, 'findAndModify',
+  return invoke(collection, 'findAndModify',
     query.query, query.options.sort, query.commandArg, query.options)
 }
 
 proto._pull = function (collection, query) {
-  return Q.ninvoke(collection, 'findAndRemove',
+  return invoke(collection, 'findAndRemove',
     query.query, query.options.sort, query.options)
 }
 
 proto._upsert = function  (collection, query) {
   query.query = query.query || {}
   query.options.upsert = true
-  return Q.ninvoke(collection, 'update',
+  return invoke(collection, 'update',
     query.query, query.commandArg, query.options)
 }
 
 proto._remove = function (collection, query) {
   if (!query.query || !Object.keys(query.query).length) {
-    return new Q.reject(
+    return new Promise.reject(
       new Error('No `where` query specified. ' +
         'Use `removeAll` to remove all documents in a collection.'))
   }
 
-  return Q.ninvoke(collection, 'remove', query.query, query.options)
+  return invoke(collection, 'remove', query.query, query.options)
 }
 
 proto._removeAll = function (collection, query) {
-  return Q.ninvoke(collection, 'remove', query.options)
+  return invoke(collection, 'remove', query.options)
 }

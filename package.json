@@ -29,11 +29,11 @@
     "moquire": "~1.5.4"
   },
   "dependencies": {
-    "q": "~0.9.4",
     "through": "~2.3.4",
     "mongodb": "~1.3.19",
     "to-string": "~0.2.0",
     "clone": "~0.1.9",
-    "charybdis": "~0.1.1"
+    "charybdis": "~0.1.1",
+    "bluebird": "~0.11.5-0"
   }
 }

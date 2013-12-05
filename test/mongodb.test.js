@@ -5,8 +5,8 @@ var sinon = require('sinon')
 chai.use(require('sinon-chai'))
 chai.use(require('chai-interface'))
 var StubDb = require('./stubDb')
-var Q = require('q')
-Q.longStackSupport = true
+var Promise = require('bluebird')
+Promise.longStackTraces()
 var stream = require('stream')
 var moquire = require('moquire')
 
@@ -30,7 +30,7 @@ describe('MongoDb', function () {
         runAsStream: Function,
         ready: Object
       })
-      Q.isPromise(mdb.ready).should.equal(true)
+      Promise.is(mdb.ready).should.equal(true)
     })
   })
 
@@ -133,7 +133,7 @@ describe('MongoDb', function () {
       }
 
       var mongodb = new MongoDb({})
-      mongodb._collection = sinon.stub().returns(Q(collection))
+      mongodb._collection = sinon.stub().returns(Promise.resolve(collection))
 
       mongodb.dropCollection('foo').then(function (collectionNames) {
         mongodb._collection.should.have.been.calledOnce
@@ -152,9 +152,9 @@ describe('MongoDb', function () {
       q.command = command
       var mdb = new MongoDb
       mdb.should.have.property('_'+command)
-      mdb['_'+command] = sinon.stub().returns(Q('result'))
+      mdb['_'+command] = sinon.stub().returns(Promise.resolve('result'))
       var collection = {}
-      mdb._collection = sinon.stub().returns(Q(collection))
+      mdb._collection = sinon.stub().returns(Promise.resolve(collection))
       var result = mdb.run(q)
       result.then(function (val) {
         mdb._collection.should.have.been.calledWithExactly(q)
@@ -209,8 +209,8 @@ describe('MongoDb', function () {
       var q = StubQuery()
       var mdb = new MongoDb()
 
-      mdb._collection = sinon.stub().returns(Q())
-      mdb._find = sinon.stub().returns(Q.reject(new Error('read error')))
+      mdb._collection = sinon.stub().returns(Promise.resolve())
+      mdb._find = sinon.stub().returns(Promise.reject(new Error('read error')))
 
       var s = mdb.runAsStream(q)
       s.on('error', function (e) {
@@ -239,8 +239,8 @@ describe('MongoDb', function () {
         stream: sinon.stub().returns(rs)
       }
       var collection = {}
-      mdb._collection = sinon.stub().returns(Q(collection))
-      mdb._find = sinon.stub().returns(Q(cursor))
+      mdb._collection = sinon.stub().returns(Promise.resolve(collection))
+      mdb._find = sinon.stub().returns(Promise.resolve(cursor))
 
       var s = mdb.runAsStream(q)
       s.on('end', function () {
@@ -361,7 +361,7 @@ describe('MongoDb', function () {
         }
       }
       var collection = {}
-      mdb._find = sinon.stub().returns(Q(cursor))
+      mdb._find = sinon.stub().returns(Promise.resolve(cursor))
 
       mdb._read(collection, q).then(function (results) {
         mdb._find.should.have.been.calledWithExactly(collection, q)
@@ -380,7 +380,7 @@ describe('MongoDb', function () {
           })
         }
       }
-      mdb._find = sinon.stub().returns(Q(cursor))
+      mdb._find = sinon.stub().returns(Promise.resolve(cursor))
       mdb._read({}, q).then(function (results) {
         Array.isArray(results).should.equal(false)
         results.should.equal('result')
@@ -398,7 +398,7 @@ describe('MongoDb', function () {
           })
         }
       }
-      mdb._find = sinon.stub().returns(Q(cursor))
+      mdb._find = sinon.stub().returns(Promise.resolve(cursor))
       mdb._read({}, q).then(function () {
         throw new Error('should not be fulfilled')
       }, function (err) {
@@ -418,7 +418,7 @@ describe('MongoDb', function () {
           })
         }
       }
-      mdb._find = sinon.stub().returns(Q(cursor))
+      mdb._find = sinon.stub().returns(Promise.resolve(cursor))
       mdb._read({}, q).then(function (val) {
         val.should.equal(q._default)
       })
@@ -470,7 +470,7 @@ describe('MongoDb', function () {
   describe('#_exists', function () {
     it('returns true if not 0', function (done) {
 
-      var count = sinon.stub().returns(Q(1))
+      var count = sinon.stub().returns(Promise.resolve(1))
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -490,7 +490,7 @@ describe('MongoDb', function () {
     })
     it('returns false if 0', function (done) {
 
-      var count = sinon.stub().returns(Q(0))
+      var count = sinon.stub().returns(Promise.resolve(0))
 
       var q = StubQuery()
       q.collection = 'fooCollection'

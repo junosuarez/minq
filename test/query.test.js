@@ -5,7 +5,7 @@ var sinon = require('sinon')
 chai.use(require('sinon-chai'))
 chai.use(require('chai-interface'))
 var StubDb = require('./stubDb')
-var Q = require('q')
+var Promise = require('bluebird')
 var stream = require('stream')
 var moquire = require('moquire')
 
@@ -239,7 +239,7 @@ describe('Query', function () {
   describe('#then', function () {
     it('forces execution as a promise', function (done) {
       var db = new StubDb()
-      db.run.returns(Q('foo'))
+      db.run.returns(Promise.resolve('foo'))
       var q = new Query(db)
       q.then(function (val) {
         val.should.equal('foo')
@@ -303,7 +303,7 @@ describe('Query', function () {
     it('takes a predicate function, eg', function (done) {
       var db = new StubDb()
       var stubResults = []
-      db.run.returns(Q(stubResults))
+      db.run.returns(Promise.resolve(stubResults))
 
       var predicate = sinon.stub().returns(true)
 
@@ -320,7 +320,7 @@ describe('Query', function () {
       var predicate = sinon.stub().returns(true)
       var db = new StubDb()
       var stubResults = []
-      db.run.returns(Q(stubResults))
+      db.run.returns(Promise.resolve(stubResults))
 
 
       var q = new Query(db)
@@ -337,7 +337,7 @@ describe('Query', function () {
       var predicate = sinon.stub().returns(false)
       var db = new StubDb()
       var stubResults = []
-      db.run.returns(Q(stubResults))
+      db.run.returns(Promise.resolve(stubResults))
 
       var q = new Query(db)
        q.from('bears')
@@ -355,7 +355,7 @@ describe('Query', function () {
       var predicate = sinon.stub().returns(false)
       var db = new StubDb()
       var stubResults = []
-      db.run.returns(Q(stubResults))
+      db.run.returns(Promise.resolve(stubResults))
 
       var q = new Query(db)
        q.from('bears')
@@ -415,7 +415,7 @@ describe('Query', function () {
         var db = new StubDb()
         var q = new Query(db)
         var out = {}
-        db.run.returns(Q(out))
+        db.run.returns(Promise.resolve(out))
         var val = {}
         q[command](val)
           .then(function (result) {

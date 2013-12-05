@@ -1,4 +1,3 @@
-var Q = require('q')
 var sinon = require('sinon')
 
 var StubDb = module.exports = function StubDb() {

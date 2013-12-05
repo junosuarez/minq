@@ -1,4 +1,4 @@
-var Q = require('q')
+var Promise = require('bluebird')
 var DefaultStore = require('./mongodb')
 var Query = require('./query')
 var ObjectId = require('mongodb').ObjectID
@@ -11,7 +11,7 @@ var Minq = module.exports = function Minq (store) {
   }
   var self = this
   this.store = store
-  this.ready = Q(this.store.ready)
+  this.ready = Promise.resolve(this.store.ready)
     .then(this._initialize.bind(this))
     .then(function (store) {
       return self
@@ -29,7 +29,7 @@ Minq.connect = function (connectionString, options) {
 var proto = Minq.prototype
 
 proto.disconnect = function () {
-  return this.store.disconnect && Q(this.store.disconnect()) || Q()
+  return this.store.disconnect && Promise.resolve(this.store.disconnect()) || Promise.resolve()
 }
 
 proto._initialize = function () {

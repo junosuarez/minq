@@ -5,11 +5,17 @@ var sinon = require('sinon')
 chai.use(require('sinon-chai'))
 chai.use(require('chai-interface'))
 var StubDb = require('./stubDb')
-var Q = require('q')
-Q.longStackSupport = true
+var Promise = require('bluebird')
+Promise.longStackTraces()
 var stream = require('stream')
 var moquire = require('moquire')
 var ObjectId = require('mongodb').ObjectID
+
+var StubStore = {
+  getCollectionNames: function () {
+    return Promise.resolve([])
+  }
+}
 
 describe('Minq', function () {
   var Minq
@@ -20,12 +26,12 @@ describe('Minq', function () {
 
   describe('[[constructor]]', function () {
     it('has interface', function () {
-      var minq = new Minq({})
+      var minq = new Minq(StubStore)
       minq.should.have.interface({
         ready: Object
       })
 
-      Q.isPromise(minq.ready).should.equal(true)
+      Promise.is(minq.ready).should.equal(true)
 
     })
 
@@ -37,7 +43,7 @@ describe('Minq', function () {
 
     it('#ready should be fulfilled with self', function (done) {
       var Minq = moquire('../index', {'./query': {}})
-      Minq.prototype._initialize = sinon.stub().returns(Q())
+      Minq.prototype._initialize = sinon.stub().returns(Promise.resolve())
 
       var minq = new Minq({ready:1})
       minq.ready.then(function (self) {
@@ -49,10 +55,13 @@ describe('Minq', function () {
 
     it('calls #initialize when store is ready', function (done) {
       var store = {
-        ready: Q()
+        ready: Promise.resolve(),
+        getCollectionNames: function () {
+          return Promise.resolve([])
+        }
       }
       var Minq = moquire('../index', {'./query': {}})
-      Minq.prototype._initialize = sinon.stub().returns(Q())
+      Minq.prototype._initialize = sinon.stub().returns(Promise.resolve())
 
       var minq = new Minq(store)
       minq.ready.then(function () {
@@ -63,7 +72,7 @@ describe('Minq', function () {
     it('overrides Query.ObjectId', function () {
       var Query = {}
       var Minq = moquire('../index', {'./query':Query})
-      new Minq({})
+      new Minq(StubStore)
       Query.ObjectId.should.equal(Minq.ObjectId)
 
     })
@@ -72,17 +81,17 @@ describe('Minq', function () {
   describe('.connect', function () {
     it('calls connect on default store and returns Minq#ready', function (done) {
       var defaultStore = {
-        connect: sinon.stub().returns(Q())
+        connect: sinon.stub().returns(Promise.resolve())
       }
       var Minq = moquire('../index', {
         './mongodb': defaultStore,
         './query':{}
         })
-      Minq.prototype._initialize = sinon.stub().returns(Q())
+      Minq.prototype._initialize = sinon.stub().returns(Promise.resolve())
 
       var minq = Minq.connect('mongodb://foo')
 
-      Q.isPromise(minq).should.equal(true)
+      Promise.is(minq).should.equal(true)
       minq.then(function (minq) {
         minq.should.be.instanceof(Minq)
         defaultStore.connect.should.have.been.called
@@ -94,7 +103,7 @@ describe('Minq', function () {
   describe('#_initialize', function () {
     it('creates convenience accessors for collections', function (done) {
       var store = {
-        getCollectionNames: sinon.stub().returns(Q(['foo','baz']))
+        getCollectionNames: sinon.stub().returns(Promise.resolve(['foo','baz']))
       }
       var query = {}
       var minq = {
@@ -121,7 +130,10 @@ describe('Minq', function () {
   describe('#disconnect', function () {
     it('calls store#disconnect', function (done) {
       var store = {
-        disconnect: sinon.stub().returns(Q())
+        disconnect: sinon.stub().returns(Promise.resolve()),
+        getCollectionNames: function () {
+          return Promise.resolve([])
+        }
       }
       var minq = new Minq(store)
       minq.disconnect().then(function () {
@@ -133,7 +145,7 @@ describe('Minq', function () {
 
   describe('#from', function () {
     it('creates a new Query', function () {
-      var store = {}
+      var store = StubStore
 
       var Query = function (store) {
         var self = this
