@@ -2,6 +2,7 @@ var Promise = require('bluebird')
 var stream = require('stream')
 var through = require('through')
 var mongodb = require('mongodb')
+var resourceError = require('resource-error')
 
 var MongoDb = module.exports = function MongoDb(db) {
   var self = this
@@ -130,7 +131,9 @@ proto._read = function (collection, query) {
         if (query._default) {
           return query._default
         }
-        throw new Error('Query returned no results and no default value specified')
+        throw new resourceError.NotFound(
+          'Query returned no results and no default value specified: ' +
+          query.collection + ' ' + JSON.stringify(query.query))
       })
     }
     return results
@@ -241,7 +244,7 @@ proto._upsert = function  (collection, query) {
 proto._remove = function (collection, query) {
   if (!query.query || !Object.keys(query.query).length) {
     return new Promise.reject(
-      new Error('No `where` query specified. ' +
+      new resourceError.Invalid('No `where` query specified. ' +
         'Use `removeAll` to remove all documents in a collection.'))
   }
 
