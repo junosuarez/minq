@@ -128,7 +128,7 @@ proto._read = function (collection, query) {
         if (results.length) {
           return results[0]
         }
-        if (query._default) {
+        if ('_default' in query) {
           return query._default
         }
         throw new resourceError.NotFound(

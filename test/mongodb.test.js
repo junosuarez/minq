@@ -424,6 +424,24 @@ describe('MongoDb', function () {
       })
       .then(done, done)
     })
+    it('defaults if scalar and no match but with falsey default',function (done) {
+      var q = StubQuery()
+      q.first = true
+      q._default = false
+      var mdb = new MongoDb()
+      var cursor = {
+        toArray: function (callback) {
+          process.nextTick(function () {
+            callback(null, [])
+          })
+        }
+      }
+      mdb._find = sinon.stub().returns(Promise.resolve(cursor))
+      mdb._read({}, q).then(function (val) {
+        val.should.equal(q._default)
+      })
+      .then(done, done)
+    })
   })
 
   describe('#_collection', function () {
