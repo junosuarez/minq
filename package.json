@@ -1,6 +1,6 @@
 {
   "name": "minq",
-  "version": "1.0.0-pre5",
+  "version": "1.0.0-pre6",
   "description": "fluent queries for mongodb using Promises/A+",
   "keywords": [
     "mongodb",
@@ -35,6 +35,7 @@
     "clone": "~0.1.9",
     "charybdis": "~0.1.2",
     "bluebird": "~0.11.5-0",
-    "resource-error": "~0.1.0"
+    "resource-error": "~0.1.0",
+    "ninvoke": "~0.1.0"
   }
 }

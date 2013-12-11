@@ -3,6 +3,7 @@ var stream = require('stream')
 var through = require('through')
 var mongodb = require('mongodb')
 var resourceError = require('resource-error')
+var invoke = require('ninvoke')
 
 var MongoDb = module.exports = function MongoDb(db) {
   var self = this
@@ -11,18 +12,6 @@ var MongoDb = module.exports = function MongoDb(db) {
     self._db = db
     return self
   })
-}
-
-function invoke(obj, method, args) {
-  var resolver = Promise.defer()
-  args = Array.prototype.slice.call(arguments, 2)
-  args.push(resolver.callback)
-  try {
-    obj[method].apply(obj, args)
-  } catch (e) {
-    resolver.reject(e)
-  }
-  return resolver.promise
 }
 
 MongoDb.connect = function (connectionString, options) {
