@@ -210,7 +210,7 @@ proto._upsert = function  (collection, query) {
   })
 }
 
-function guardId = function (query, queryFn) {
+function guardId (query, queryFn) {
   var restoreId
   // mongodb doesn't allow a doc to be update with an _id property
   // so we convert it into a where clause.
