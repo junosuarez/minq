@@ -119,6 +119,23 @@ describe('MongoDb', function () {
       })
       .then(done, done)
     })
+    it('removes db namespacing from underlying response for dbs including non alpha chars', function (done) {
+    // https://github.com/jden/minq/issues/16
+      var MongoDb = moquire('../mongodb')
+      var db = {
+        collectionNames: function (callback) {
+          process.nextTick(function () {
+            // the mongodb driver sends back funny shaped objects:
+            callback(null, [{name:'test-db.foos'},{name:'test-db.bars'}])
+          })
+        }
+      }
+      var mongodb = new MongoDb(db)
+      mongodb.getCollectionNames().then(function (collectionNames) {
+        collectionNames.should.deep.equal(['foos','bars'])
+      })
+      .then(done, done)
+    })
   })
 
   describe('#dropCollection', function () {

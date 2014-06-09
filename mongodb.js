@@ -34,7 +34,7 @@ proto.getCollectionNames = function () {
   return this.db.then(function (db) {
     return invoke(db, 'collectionNames').then(function (names) {
       return names.map(function (name) {
-        return name.name.replace(/^\w*\./, '')
+        return name.name.replace(/^[^\.]*\./, '')
       })
     })
   })

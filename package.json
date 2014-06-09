@@ -1,6 +1,6 @@
 {
   "name": "minq",
-  "version": "1.0.0-pre7",
+  "version": "1.0.0-pre8",
   "description": "fluent queries for mongodb using Promises/A+",
   "keywords": [
     "mongodb",
@@ -26,7 +26,7 @@
     "chai-interface": "~1.1.0",
     "sinon-chai": "~2.4.0",
     "mocha": "~1.8.1",
-    "moquire": "~1.5.4"
+    "moquire": "^1.5.5"
   },
   "dependencies": {
     "through": "~2.3.4",
