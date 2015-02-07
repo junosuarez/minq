@@ -646,12 +646,12 @@ describe('MongoDb', function () {
       .then(done, done)
 
     })
-    it('converts included ._id property to where clause', function (done) {
+    it('leaves _id alone if doing a full-document update; #6', function (done) {
 
       var update = function (query, val, options, callback) {
         update.args = arguments
-        update.args[0] = JSON.parse(JSON.stringify(update.args[0]))
-        update.args[1] = JSON.parse(JSON.stringify(update.args[1]))
+        update.where = JSON.parse(JSON.stringify(update.args[0]))
+        update.update = JSON.parse(JSON.stringify(update.args[1]))
         process.nextTick(function () {
           callback(null, [])
         })
@@ -667,15 +667,18 @@ describe('MongoDb', function () {
 
       mdb._update(collection, q).then(function (val) {
 
-        // id should be moved to query
-        update.args[0]._id.should.equal(23)
-        update.args[1].should.not.have.property('_id')
+      update.update.should.deep.equal({
+        _id: 23,
+        foo: 'doc'
+      })
+
 
         // id should still be on passed in document
         q.commandArg._id.should.equal(23)
 
       })
       .then(done, done)
+
 
     })
   })

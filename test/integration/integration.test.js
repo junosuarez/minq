@@ -4,8 +4,7 @@ var expect = chai.expect
 var sinon = require('sinon')
 chai.use(require('sinon-chai'))
 chai.use(require('chai-interface'))
-var Q = require('q')
-Q.longStackSupport = true
+var Promise = require('bluebird')
 var stream = require('stream')
 var through = require('through')
 var ObjectId = require('mongodb').ObjectID
@@ -165,7 +164,7 @@ describe('integration tests', function () {
 })
 var raw = require('./data.json').result
 function testData(db, collection) {
-  return Q.all(raw.map(function (doc) {
+  return Promise.all(raw.map(function (doc) {
     return db.from(collection).insert(doc)
   }))
   .then(function(){ })

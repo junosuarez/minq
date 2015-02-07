@@ -170,10 +170,8 @@ proto._insert = function (collection, query) {
 
 // (Query) => Promise
 proto._update = function (collection, query) {
-  return guardId(query, function (query) {
-    return invoke(collection, 'update',
-      query.query, query.commandArg, query.options)
-  })
+  return invoke(collection, 'update',
+    query.query, query.commandArg, query.options)
 }
 
 // returns the document BEFORE the changes object has been applied
@@ -204,39 +202,8 @@ proto._pull = function (collection, query) {
 proto._upsert = function  (collection, query) {
   query.query = query.query || {}
   query.options.upsert = true
-  return guardId(query, function (query) {
-    return invoke(collection, 'update',
-      query.query, query.commandArg, query.options)
-  })
-}
-
-function guardId (query, queryFn) {
-  var restoreId
-  // mongodb doesn't allow a doc to be update with an _id property
-  // so we convert it into a where clause.
-  // Below, we restore it to the query before returning flow back to the
-  // calling function. This is an optimization over copying the entire
-  // document object, although immutability is what we really want.
-  // By reattaching it after the underlying query but before resolving
-  // the promise we can simulate immutability. It's threadsafe because JS.
-  if (query.commandArg._id) {
-    restoreId = query.commandArg._id
-    delete query.commandArg._id
-    query.query._id = restoreId
-  }
-  var op = queryFn(query)
-
-  if (restoreId) {
-    op = op.then(function (val) {
-      query.commandArg._id = restoreId
-      return val
-    }, function (err) {
-      query.commandArg._id = restoreId
-      throw err
-    })
-  }
-
-  return op
+  return invoke(collection, 'update',
+    query.query, query.commandArg, query.options)
 }
 
 proto._remove = function (collection, query) {
