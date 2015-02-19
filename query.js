@@ -137,13 +137,17 @@ var _checkAssertion = function (assertion) {
   }
 }
 
+proto.val = function () {
+  return this._.db.run(this._)
+    .then(_checkAssertion(this._.assertion))  
+}
+
 // forcers
-// fetch result set as promise
+// fetch result set as promise (for lazy query)
 proto.then = function (fulfill, reject) {
   // TODO: guard for db
 
-  return this._.db.run(this._)
-    .then(_checkAssertion(this._.assertion))
+  return this.val()
     .then(fulfill, reject)
 }
 // fetch result set as stream
@@ -160,14 +164,14 @@ proto.forEach = function (iterator) {
 }
 
 // mutators
-proto.insert = command('insert')
-proto.update = command('update')
-proto.findAndModify = command('findAndModify')
-proto.modifyAndFind = command('modifyAndFind')
-proto.pull = command('pull')
-proto.upsert = command('upsert')
-proto.remove = command('remove')
-proto.removeAll = command('removeAll')
+proto.insert = mutatorCommand('insert')
+proto.update = mutatorCommand('update')
+proto.findAndModify = mutatorCommand('findAndModify')
+proto.modifyAndFind = mutatorCommand('modifyAndFind')
+proto.pull = mutatorCommand('pull')
+proto.upsert = mutatorCommand('upsert')
+proto.remove = mutatorCommand('remove')
+proto.removeAll = mutatorCommand('removeAll')
 
 
 function command(name) {
@@ -178,6 +182,16 @@ function command(name) {
   }
   fn.name = name
   return fn
+}
+
+function mutatorCommand(name) {
+  var fn = function (arg) {
+    this._.command = name
+    this._.commandArg = arg
+    return this.val()
+  }
+  fn.name = name
+  return fn 
 }
 
 Query.ObjectId = function (oid) {

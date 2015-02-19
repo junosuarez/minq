@@ -56,6 +56,26 @@ describe('integration tests', function () {
 
   })
 
+
+  // https://github.com/jden/minq/issues/15
+  it('eager evaluates updates', function (done) {
+
+    db.from(collection).insert({_id: 'asdf62'})
+      .then(function () {
+        db.from(collection).where({_id: 'asdf62'})
+          .update({$set: {a: true}})
+          // don't call `.then()
+        setTimeout(function () {
+          db.from(collection).where({_id:'asdf62'})
+            .first()
+            .then(function (doc) {
+              doc.a.should.equal(true)
+            })
+            .then(done, done)
+        }, 50)
+      })
+  })
+
   describe('bson objectids', function () {
     it('works with byId', function (done) {
       var oid = ObjectId()
