@@ -1,10 +1,10 @@
+/* global describe, it */
 var chai = require('chai')
 chai.should()
 var expect = chai.expect
 var sinon = require('sinon')
 chai.use(require('sinon-chai'))
 chai.use(require('chai-interface'))
-var StubDb = require('./stubDb')
 var Promise = require('bluebird')
 Promise.longStackTraces()
 var stream = require('stream')
@@ -34,7 +34,6 @@ describe('MongoDb', function () {
     })
   })
 
-
   describe('.connect', function () {
     it('creates a new MongoClient and creates a new mongodb provider', function (done) {
       var db = {}
@@ -52,7 +51,7 @@ describe('MongoDb', function () {
         }
       })
 
-      function FakeProvider() {}
+      function FakeProvider () {}
       FakeProvider.prototype = MongoDb.prototype
       FakeProvider.connect = MongoDb.connect
 
@@ -109,13 +108,13 @@ describe('MongoDb', function () {
         collectionNames: function (callback) {
           process.nextTick(function () {
             // the mongodb driver sends back funny shaped objects:
-            callback(null, [{name:'db.a'},{name:'db.b'},{name:'db.c'}])
+            callback(null, [{name: 'db.a'}, {name: 'db.b'}, {name: 'db.c'}])
           })
         }
       }
       var mongodb = new MongoDb(db)
       mongodb.getCollectionNames().then(function (collectionNames) {
-        collectionNames.should.deep.equal(['a','b','c'])
+        collectionNames.should.deep.equal(['a', 'b', 'c'])
       })
       .then(done, done)
     })
@@ -126,13 +125,13 @@ describe('MongoDb', function () {
         collectionNames: function (callback) {
           process.nextTick(function () {
             // the mongodb driver sends back funny shaped objects:
-            callback(null, [{name:'test-db.foos'},{name:'test-db.bars'}])
+            callback(null, [{name: 'test-db.foos'}, {name: 'test-db.bars'}])
           })
         }
       }
       var mongodb = new MongoDb(db)
       mongodb.getCollectionNames().then(function (collectionNames) {
-        collectionNames.should.deep.equal(['foos','bars'])
+        collectionNames.should.deep.equal(['foos', 'bars'])
       })
       .then(done, done)
     })
@@ -162,30 +161,30 @@ describe('MongoDb', function () {
   })
 
   describe('#run', function () {
-    ['read','count','exists','insert', 'update', 'findAndModify', 'modifyAndFind', 'pull',
+    ['read', 'count', 'exists', 'insert', 'update', 'findAndModify', 'modifyAndFind', 'pull',
     'upsert', 'remove', 'removeAll', 'aggregate'].forEach(function (command) {
-    it('dispatches to ' + command + 'command', function (done) {
-      var q = StubQuery()
-      q.command = command
-      var mdb = new MongoDb
-      mdb.should.have.property('_'+command)
-      mdb['_'+command] = sinon.stub().returns(Promise.resolve('result'))
-      var collection = {}
-      mdb._collection = sinon.stub().returns(Promise.resolve(collection))
-      var result = mdb.run(q)
-      result.then(function (val) {
-        mdb._collection.should.have.been.calledWithExactly(q)
-        mdb['_'+command].should.have.been.calledOnce
-        mdb['_'+command].should.have.been.calledWithExactly(collection, q)
-        val.should.equal('result')
+      it('dispatches to ' + command + 'command', function (done) {
+        var q = StubQuery()
+        q.command = command
+        var mdb = new MongoDb()
+        mdb.should.have.property('_' + command)
+        mdb['_' + command] = sinon.stub().returns(Promise.resolve('result'))
+        var collection = {}
+        mdb._collection = sinon.stub().returns(Promise.resolve(collection))
+        var result = mdb.run(q)
+        result.then(function (val) {
+          mdb._collection.should.have.been.calledWithExactly(q)
+          mdb['_' + command].should.have.been.calledOnce
+          mdb['_' + command].should.have.been.calledWithExactly(collection, q)
+          val.should.equal('result')
+        })
+        .then(done, done)
       })
-      .then(done, done)
-    })
     })
     it('is rejected if unknown command', function (done) {
       var q = StubQuery()
       q.command = 'false command'
-      var mdb = new MongoDb
+      var mdb = new MongoDb()
       var result = mdb.run(q)
       result.then(function () {
         throw new Error('should not resolve')
@@ -249,9 +248,6 @@ describe('MongoDb', function () {
         rs.pipe.args = arguments
         return rs._pipe.apply(rs, arguments)
       }
-      var underlyingStream = {
-        pipe: sinon.stub().returns(rs)
-      }
       var cursor = {
         stream: sinon.stub().returns(rs)
       }
@@ -292,7 +288,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {find:find}
+      var collection = {find: find}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -313,7 +309,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {find:find}
+      var collection = {find: find}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -335,7 +331,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {find:find}
+      var collection = {find: find}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -373,7 +369,7 @@ describe('MongoDb', function () {
       var cursor = {
         toArray: function (callback) {
           process.nextTick(function () {
-            callback(null, ['result','set'])
+            callback(null, ['result', 'set'])
           })
         }
       }
@@ -423,7 +419,7 @@ describe('MongoDb', function () {
       })
       .then(done, done)
     })
-    it('defaults if scalar and no match but with default',function (done) {
+    it('defaults if scalar and no match but with default', function (done) {
       var q = StubQuery()
       q.first = true
       q._default = {def: 'ault'}
@@ -441,7 +437,7 @@ describe('MongoDb', function () {
       })
       .then(done, done)
     })
-    it('defaults if scalar and no match but with falsey default',function (done) {
+    it('defaults if scalar and no match but with falsey default', function (done) {
       var q = StubQuery()
       q.first = true
       q._default = false
@@ -487,7 +483,7 @@ describe('MongoDb', function () {
           callback(null, 108)
         })
       }
-      var collection = {count:count}
+      var collection = {count: count}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -553,7 +549,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {aggregate:aggregate}
+      var collection = {aggregate: aggregate}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -575,12 +571,12 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {aggregate:aggregate}
+      var collection = {aggregate: aggregate}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
       q.command = 'aggregate'
-      q.commandArg = {not:Array}
+      q.commandArg = {not: Array}
       q.options = {}
       var mdb = new MongoDb()
 
@@ -602,7 +598,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {insert:insert}
+      var collection = {insert: insert}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -628,7 +624,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {update:update}
+      var collection = {update: update}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -656,7 +652,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {update:update}
+      var collection = {update: update}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -667,18 +663,16 @@ describe('MongoDb', function () {
 
       mdb._update(collection, q).then(function (val) {
 
-      update.update.should.deep.equal({
-        _id: 23,
-        foo: 'doc'
-      })
-
+        update.update.should.deep.equal({
+          _id: 23,
+          foo: 'doc'
+        })
 
         // id should still be on passed in document
         q.commandArg._id.should.equal(23)
 
       })
       .then(done, done)
-
 
     })
   })
@@ -691,7 +685,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {findAndModify:findAndModify}
+      var collection = {findAndModify: findAndModify}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -725,7 +719,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {findAndModify:findAndModify}
+      var collection = {findAndModify: findAndModify}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -751,7 +745,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {findAndModify:findAndModify}
+      var collection = {findAndModify: findAndModify}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -787,7 +781,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {findAndRemove:findAndRemove}
+      var collection = {findAndRemove: findAndRemove}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -819,7 +813,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {update:update}
+      var collection = {update: update}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -851,7 +845,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {remove:remove}
+      var collection = {remove: remove}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -875,7 +869,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {remove:remove}
+      var collection = {remove: remove}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -902,7 +896,7 @@ describe('MongoDb', function () {
           callback(null, [])
         })
       }
-      var collection = {remove:remove}
+      var collection = {remove: remove}
 
       var q = StubQuery()
       q.collection = 'fooCollection'
@@ -918,10 +912,9 @@ describe('MongoDb', function () {
     })
   })
 
-
 })
-function StubQuery() {
+function StubQuery () {
   return {
-      command: "read"
+      command: 'read'
   }
 }

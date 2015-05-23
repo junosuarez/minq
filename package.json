@@ -11,7 +11,8 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha",
+    "lint": "standard",
+    "test": "standard && node node_modules/mocha/bin/mocha",
     "test-integration": "node node_modules/mocha/bin/mocha test/integration"
   },
   "repository": {
@@ -22,11 +23,12 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "~1.8.1",
-    "sinon": "~1.7.3",
     "chai-interface": "~1.1.0",
-    "sinon-chai": "~2.4.0",
     "mocha": "~1.8.1",
-    "moquire": "^1.5.5"
+    "moquire": "^1.5.5",
+    "sinon": "~1.7.3",
+    "sinon-chai": "~2.4.0",
+    "standard": "^3.11.0"
   },
   "dependencies": {
     "bluebird": "^2.9.12",

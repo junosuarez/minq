@@ -1,11 +1,9 @@
+/* global describe, it, beforeEach, afterEach */
 var chai = require('chai')
 chai.should()
-var expect = chai.expect
-var sinon = require('sinon')
 chai.use(require('sinon-chai'))
 chai.use(require('chai-interface'))
 var Promise = require('bluebird')
-var stream = require('stream')
 var through = require('through')
 var ObjectId = require('mongodb').ObjectID
 
@@ -15,14 +13,14 @@ var connStr = 'mongodb://localhost/minq_test'
 describe('integration tests', function () {
   var minq
   var db
-  var collection = 'test'+Date.now()
+  var collection = 'test' + Date.now()
 
   beforeEach(function (done) {
     minq = Minq.connect(connStr)
-    minq.then(function (_db){
+    minq.then(function (_db) {
       db = _db
     })
-    .then(null, function (e){
+    .then(null, function (e) {
       if (e && /connect/.test(e.message)) {
         console.log('\n')
         console.log('=======================================')
@@ -46,16 +44,15 @@ describe('integration tests', function () {
 
     db.from(collection).insert({greeting: 'hello', name: 'jason'})
       .then(function () {
-        return db.from(collection).where({greeting:'hello'})
+        return db.from(collection).where({greeting: 'hello'})
           .first()
           .then(function (result) {
             result.name.should.equal('jason')
           })
-    })
-    .then(done, done)
+      })
+      .then(done, done)
 
   })
-
 
   // https://github.com/jden/minq/issues/15
   it('eager evaluates updates', function (done) {
@@ -66,7 +63,7 @@ describe('integration tests', function () {
           .update({$set: {a: true}})
           // don't call `.then()
         setTimeout(function () {
-          db.from(collection).where({_id:'asdf62'})
+          db.from(collection).where({_id: 'asdf62'})
             .first()
             .then(function (doc) {
               doc.a.should.equal(true)
@@ -79,7 +76,7 @@ describe('integration tests', function () {
   describe('bson objectids', function () {
     it('works with byId', function (done) {
       var oid = ObjectId()
-      db.from(collection).insert({_id: oid, test:true})
+      db.from(collection).insert({_id: oid, test: true})
       .then(function () {
         return db.from(collection).byId(oid.toString())
         .then(function (doc) {
@@ -97,7 +94,7 @@ describe('integration tests', function () {
 
     it('can query', function (done) {
       db.from(collection)
-        .where({'language_paradigms':{id: '/en/functional_programming'}})
+        .where({'language_paradigms': {id: '/en/functional_programming'}})
         .then(function (langs) {
           langs.length.should.equal(44)
         })
@@ -183,9 +180,9 @@ describe('integration tests', function () {
 
 })
 var raw = require('./data.json').result
-function testData(db, collection) {
+function testData (db, collection) {
   return Promise.all(raw.map(function (doc) {
     return db.from(collection).insert(doc)
   }))
-  .then(function(){ })
+  .then(function () { })
 }

@@ -17,7 +17,7 @@ var Minq = module.exports = function Minq (store) {
       return self
     })
 
-  //override Query.ObjectId
+  // override Query.ObjectId
   Query.ObjectId = Minq.ObjectId
 }
 

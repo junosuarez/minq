@@ -3,7 +3,7 @@ var util = require('./util')
 var charybdis = require('charybdis')
 var toString = require('to-string')
 
-var Query = module.exports = function Query(db){
+var Query = module.exports = function Query (db) {
   this._ = {
     db: db,
     collection: null,
@@ -123,8 +123,8 @@ proto.expect = function (quantity) {
   }
   return this.assert(function (result) {
     return result &&
-      (result.length ? (quantity == result.length) : quantity == 1)
-  }, 'Expected ' + quantity + ' result' + (quantity == 1 ? '' : 's'))
+      (result.length ? (quantity === result.length) : quantity === 1)
+  }, 'Expected ' + quantity + ' result' + (quantity === 1 ? '' : 's'))
 }
 
 var _checkAssertion = function (assertion) {
@@ -139,7 +139,7 @@ var _checkAssertion = function (assertion) {
 
 proto.val = function () {
   return this._.db.run(this._)
-    .then(_checkAssertion(this._.assertion))  
+    .then(_checkAssertion(this._.assertion))
 }
 
 // forcers
@@ -173,8 +173,7 @@ proto.upsert = mutatorCommand('upsert')
 proto.remove = mutatorCommand('remove')
 proto.removeAll = mutatorCommand('removeAll')
 
-
-function command(name) {
+function command (name) {
   var fn = function (arg) {
     this._.command = name
     this._.commandArg = arg
@@ -184,14 +183,14 @@ function command(name) {
   return fn
 }
 
-function mutatorCommand(name) {
+function mutatorCommand (name) {
   var fn = function (arg) {
     this._.command = name
     this._.commandArg = arg
     return this.val()
   }
   fn.name = name
-  return fn 
+  return fn
 }
 
 Query.ObjectId = function (oid) {

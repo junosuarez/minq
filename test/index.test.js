@@ -1,13 +1,12 @@
+/* global describe, it, beforeEach */
 var chai = require('chai')
 chai.should()
 var expect = chai.expect
 var sinon = require('sinon')
 chai.use(require('sinon-chai'))
 chai.use(require('chai-interface'))
-var StubDb = require('./stubDb')
 var Promise = require('bluebird')
 Promise.longStackTraces()
-var stream = require('stream')
 var moquire = require('moquire')
 var ObjectId = require('mongodb').ObjectID
 
@@ -38,6 +37,7 @@ describe('Minq', function () {
     it('requires store parameter', function () {
       expect(function () {
         var minq = new Minq()
+        return minq
       }).to.throw(/required/)
     })
 
@@ -45,7 +45,7 @@ describe('Minq', function () {
       var Minq = moquire('../index', {'./query': {}})
       Minq.prototype._initialize = sinon.stub().returns(Promise.resolve())
 
-      var minq = new Minq({ready:1})
+      var minq = new Minq({ready: 1})
       minq.ready.then(function (self) {
         self.should.equal(minq)
       })
@@ -71,8 +71,8 @@ describe('Minq', function () {
     })
     it('overrides Query.ObjectId', function () {
       var Query = {}
-      var Minq = moquire('../index', {'./query':Query})
-      new Minq(StubStore)
+      var Minq = moquire('../index', {'./query': Query})
+      new Minq(StubStore) // eslint-disable-line
       Query.ObjectId.should.equal(Minq.ObjectId)
 
     })
@@ -85,7 +85,7 @@ describe('Minq', function () {
       }
       var Minq = moquire('../index', {
         './mongodb': defaultStore,
-        './query':{}
+        './query': {}
         })
       Minq.prototype._initialize = sinon.stub().returns(Promise.resolve())
 
@@ -103,7 +103,7 @@ describe('Minq', function () {
   describe('#_initialize', function () {
     it('creates convenience accessors for collections', function (done) {
       var store = {
-        getCollectionNames: sinon.stub().returns(Promise.resolve(['foo','baz']))
+        getCollectionNames: sinon.stub().returns(Promise.resolve(['foo', 'baz']))
       }
       var query = {}
       var minq = {
@@ -121,6 +121,7 @@ describe('Minq', function () {
 
         var baz = minq.baz
         minq.from.should.have.been.calledWithExactly('baz')
+        baz.should.equal(query)
 
       })
       .then(done, done)

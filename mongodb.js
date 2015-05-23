@@ -1,11 +1,10 @@
 var Promise = require('bluebird')
-var stream = require('stream')
 var through = require('through')
 var mongodb = require('mongodb')
 var resourceError = require('resource-error')
 var invoke = require('ninvoke')
 
-var MongoDb = module.exports = function MongoDb(db) {
+var MongoDb = module.exports = function MongoDb (db) {
   var self = this
   this.db = Promise.resolve(db)
   this.ready = this.db.then(function (db) {
@@ -51,7 +50,7 @@ proto.dropCollection = function (collectionName) {
 proto.run = function (query) {
   var self = this
   // todo: more robust query checking (valid commands, etc)
-  switch(query.command) {
+  switch (query.command) {
     case 'read':
     case 'count':
     case 'exists':
@@ -74,7 +73,7 @@ proto.run = function (query) {
 
 // (Query) => Stream
 proto.runAsStream = function (query) {
-  var err;
+  var err
   if (!query || query.command !== 'read') {
     err = new Error('Query command must be "read"')
   }
@@ -96,12 +95,12 @@ proto.runAsStream = function (query) {
       .then(function (cursor) {
         cursor.stream().pipe(outStream)
       })
+  })
+  .catch(function (err) {
+    process.nextTick(function () {
+      outStream.emit('error', err)
     })
-    .catch(function (err) {
-      process.nextTick(function () {
-          outStream.emit('error', err)
-      })
-    })
+  })
 
   return outStream
 }
@@ -130,14 +129,14 @@ proto._read = function (collection, query) {
 }
 
 // (MongoCollection, Query) => Promise<MongoCursor>
-proto._find = function(collection, query) {
+proto._find = function (collection, query) {
   query.options = query.options || {}
   query.options.fields = query.options.fields || {}
   return invoke(collection, 'find', query.query, query.options)
 }
 
 // (Query) => Promise<MongoCollection>
-proto._collection = function(query) {
+proto._collection = function (query) {
   return this.db.then(function (db) {
     return db.collection(query.collection)
   })
@@ -145,7 +144,7 @@ proto._collection = function(query) {
 
 // (MongoCollection, Query) => Promise<Number>
 proto._count = function (collection, query) {
-    return invoke(collection, 'count', query.query)
+  return invoke(collection, 'count', query.query)
 }
 
 // (MongoCollection?, Query) => Promise<Boolean>
@@ -199,7 +198,7 @@ proto._pull = function (collection, query) {
     query.query, query.options.sort, query.options)
 }
 
-proto._upsert = function  (collection, query) {
+proto._upsert = function (collection, query) {
   query.query = query.query || {}
   query.options.upsert = true
   return invoke(collection, 'update',
@@ -208,7 +207,7 @@ proto._upsert = function  (collection, query) {
 
 proto._remove = function (collection, query) {
   if (!query.query || !Object.keys(query.query).length) {
-    return new Promise.reject(
+    return Promise.reject(
       new resourceError.Invalid('No `where` query specified. ' +
         'Use `removeAll` to remove all documents in a collection.'))
   }
