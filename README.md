@@ -1,6 +1,8 @@
 # minq
 fluent queries for mongodb using promises
 
+[![Circle CI](https://circleci.com/gh/jden/minq.svg?style=svg)](https://circleci.com/gh/jden/minq) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+
 ## installation
 
     $ npm install minq
@@ -349,11 +351,13 @@ As well, integration tests:
 
 ## contributors
 
+ [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
+
 jden <jason@denizac.org>
 
 ## license
 MIT. (c) MMXIII jden <jason@denizac.org>. See LICENSE.md.
 
-<a href="http://promises-aplus.github.io/promises-spec/"><img src="https://secure.gravatar.com/avatar/1f78ca80239fd9154da65f3678b834c2?s=400&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="200" /></a>
+<a href="https://promises-aplus.github.io/promises-spec/"><img src="https://secure.gravatar.com/avatar/1f78ca80239fd9154da65f3678b834c2?s=400&d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png" width="200" /></a>
 
-<img src="http://upload.wikimedia.org/wikipedia/en/e/eb/MongoDB_Logo.png"/>
+<img src="https://upload.wikimedia.org/wikipedia/en/e/eb/MongoDB_Logo.png"/>
